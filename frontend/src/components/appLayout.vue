@@ -20,6 +20,7 @@ const change = () => {
 <template>
   <div class="flex h-screen">
 
+    <!-- SideBar -->
     <aside :class="[
       'bg-gray-800 flex justify-center items-center transition-all duration-200',
       statusClass[status]
@@ -30,10 +31,12 @@ const change = () => {
 
     <div class="flex flex-col flex-1">
 
+      <!-- HEADER -->
       <header class="h-16 border-b shrink-0 flex justify-center items-center">
         navbar...
       </header>
 
+      <!-- MAIN -->
       <main class="flex-1 p-6 flex justify-center items-center">
         Main...
       </main>
