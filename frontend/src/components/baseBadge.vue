@@ -12,23 +12,23 @@ const props = withDefaults(defineProps<{
 })
 
 const variantClasses: Record<Variant, string> = {
-    sucess: 'border-1 border-green-400 bg-green-300 text-green-600',
-    warning: 'border-1 border-yellow-400 bg-yellow-200 text-yellow-600',
-    danger: 'border-1 border-red-400 bg-red-300 text-red-600',
-    info: 'border-1 border-blue-400 bg-blue-300 text-blue-600',
-    neutral: 'border-1 border-gray-400 bg-gray-300 text-gray-600',
+    sucess: 'bg-secundary-green text-primary-green',
+    warning: 'bg-secundary-yellow text-primary-yellow',
+    danger: 'bg-secundary-red text-primary-red',
+    info: 'bg-blue-300 text-blue-600',
+    neutral: 'bg-gray-300 text-gray-600',
 }
 
 const sizeClasses: Record<Size, string> = {
-    sm: 'text-sm px-2 py-1',
-    md: 'text-base px-3 py-1',
-    lg: 'text-lg px-3 py-1'
+    sm: 'text-sm px-5 py-0.5',
+    md: 'text-base px-5',
+    lg: 'text-lg px-6'
 }
 
 </script>
 <template>
     <span :class="[
-        'rounded-full w-fit h-fit',
+        'rounded-full w-fit h-fit font-bold',
         'flex justify-center items-center',
         variantClasses[variant],
         sizeClasses[size]
