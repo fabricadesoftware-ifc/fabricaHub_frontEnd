@@ -1,9 +1,13 @@
 <script setup lang="ts">
 
+defineOptions({
+    inheritAttrs: false
+})
+
 type Variant = 'primario' | 'secundario' | 'perigo'
 type Size = 'sm' | 'md' | 'lg'
 
-const props = withDefaults(defineProps<{
+withDefaults(defineProps<{
     variant?: Variant,
     size?: Size,
     disabled?: boolean
@@ -26,11 +30,18 @@ const sizeClasses: Record<Size, string> = {
 }
 
 </script>
+
 <template>
-    <button :class="[
-        'cursor-pointer rounded-sm transition duration-300 ease',
-        'disabled:opacity-50 disabled:cursor-not-allowed',
-        variantClasses[variant],
-        sizeClasses[size]
-    ]" :disabled="disabled"><slot></slot></button>
+    <button
+        v-bind="$attrs"
+        :class="[
+            'cursor-pointer rounded-sm transition duration-300 ease',
+            'disabled:opacity-50 disabled:cursor-not-allowed',
+            variantClasses[variant],
+            sizeClasses[size]
+        ]"
+        :disabled="disabled"
+    >
+        <slot></slot>
+    </button>
 </template>
