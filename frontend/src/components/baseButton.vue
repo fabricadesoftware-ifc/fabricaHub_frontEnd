@@ -18,7 +18,7 @@ withDefaults(defineProps<{
 })
 
 const variantClasses: Record<Variant, string> = {
-    primario: 'bg-blue-600 hover:bg-blue-800 text-white',
+    primario: 'bg-[var(--color-primary-orange)] hover:opacity-90 text-white',
     secundario: 'bg-red-600 hover:bg-red-800 text-white',
     perigo: 'bg-yellow-600 hover:bg-yellow-800 text-white',
 }

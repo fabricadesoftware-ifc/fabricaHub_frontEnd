@@ -37,17 +37,17 @@ const handleLogin = () => {
 </script>
 
 <template>
-    <div class="min-h-screen bg-gray-100 flex items-center justify-center px-4">
+    <div class="min-h-screen bg-orange-50 flex items-center justify-center px-4">
 
         <div class="w-full max-w-md bg-white rounded-lg shadow-md p-8">
 
             <div class="mb-8 text-center">
 
-                <h1 class="text-3xl font-bold text-gray-900">
+                <h1 class="text-3xl font-bold text-[var(--color-primary-text)]">
                     FabricaHub
                 </h1>
 
-                <p class="text-sm text-gray-500 mt-2">
+                <p class="text-sm text-[var(--color-secundary-text)] mt-2">
                     Entre na plataforma
                 </p>
 
