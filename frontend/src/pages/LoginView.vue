@@ -1,8 +1,17 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 import BaseInput from '@/components/baseInput.vue'
 import BaseButton from '@/components/baseButton.vue'
+
+import { useAuthStore } from '@/stores/auth'
+import { useUiStore } from '@/stores/ui'
+
+const router = useRouter()
+
+const authStore = useAuthStore()
+const uiStore = useUiStore()
 
 const username = ref('')
 const password = ref('')
@@ -10,7 +19,8 @@ const password = ref('')
 const usernameError = ref('')
 const passwordError = ref('')
 
-const handleLogin = () => {
+const handleLogin = async () => {
+
     usernameError.value = ''
     passwordError.value = ''
 
@@ -29,10 +39,27 @@ const handleLogin = () => {
         return
     }
 
-    console.log({
-        username: username.value,
-        password: password.value
-    })
+    try {
+
+        await authStore.login(
+            username.value,
+            password.value
+        )
+
+        uiStore.showToast(
+            'Login realizado com sucesso',
+            'success'
+        )
+
+        router.push('/')
+
+    } catch {
+
+        uiStore.showToast(
+            'Usuário ou senha inválidos',
+            'error'
+        )
+    }
 }
 </script>
 
