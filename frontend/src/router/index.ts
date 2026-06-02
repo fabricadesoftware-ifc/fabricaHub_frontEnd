@@ -8,7 +8,7 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: () => import('@/pages/HomeView.vue'),
-      meta: { requiresAuth: true } 
+      meta: { requiresAuth: true }
     },
     {
       path: '/login',
@@ -22,18 +22,32 @@ const router = createRouter({
   ]
 })
 
-router.beforeEach(async (to, from, next) => {
+router.beforeEach((to) => {
+
   const authStore = useAuthStore()
-  
-  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
-    next({ name: 'login', query: { redirect: to.fullPath } })
-  } 
-  else if (to.name === 'login' && authStore.isAuthenticated) {
-    next({ name: 'home' })
+
+  if (
+    to.meta.requiresAuth &&
+    !authStore.isAuthenticated
+  ) {
+    return {
+      name: 'login',
+      query: {
+        redirect: to.fullPath
+      }
+    }
   }
-  else {
-    next()
+
+  if (
+    to.name === 'login' &&
+    authStore.isAuthenticated
+  ) {
+    return {
+      name: 'home'
+    }
   }
+
+  return true
 })
 
 export default router
