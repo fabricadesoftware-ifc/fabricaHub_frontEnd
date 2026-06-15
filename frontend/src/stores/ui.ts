@@ -1,17 +1,36 @@
-import { defineStore } from 'pinia';
+import { defineStore } from 'pinia'
+import { ref } from 'vue'
 
-export const useUiStore = defineStore('ui', {
-  state: () => ({
-    isSidebarOpen: true,
-    globalLoading: false,
-    notifications: [] as string[],
-  }),
-  actions: {
-    toggleSidebar() {
-      this.isSidebarOpen = !this.isSidebarOpen;
-    },
-    setLoading(status: boolean) {
-      this.globalLoading = status;
+type ToastType = 'success' | 'error'
+
+export const useUiStore = defineStore('ui', () => {
+
+    const show = ref(false)
+
+    const message = ref('')
+
+    const type = ref<ToastType>('success')
+
+    const showToast = (
+        toastMessage: string,
+        toastType: ToastType = 'success'
+    ) => {
+
+        message.value = toastMessage
+
+        type.value = toastType
+
+        show.value = true
+
+        setTimeout(() => {
+            show.value = false
+        }, 3000)
     }
-  }
-});
+
+    return {
+        show,
+        message,
+        type,
+        showToast
+    }
+})
