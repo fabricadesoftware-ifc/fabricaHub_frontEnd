@@ -86,7 +86,6 @@ const descricaoContador = computed(() => {
   background: var(--ink);
   color: var(--text);
   font-weight: 700;
-  box-shadow: inset 4px 0 0 var(--brand-orange);
   margin-right: -15px;
   border-radius: 6px 0 0 6px;
 }

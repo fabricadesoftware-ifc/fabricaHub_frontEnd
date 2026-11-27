@@ -81,7 +81,6 @@ function aoTeclar(evento: KeyboardEvent, indice: number) {
 .aba.ativa {
   background: var(--surface);
   color: var(--text);
-  box-shadow: inset 0 2px 0 var(--accent);
 }
 
 .contador {

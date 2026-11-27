@@ -111,18 +111,28 @@ function detalhe(evento: EventoAgenda, nomeProjeto: (id?: number) => string): st
   padding: 6px 8px;
   border-radius: 4px;
   background: var(--surface-2);
-  border-left: 2px solid var(--text-subtle);
   font-size: 11px;
   line-height: 1.35;
 }
 
-.evento.reuniao,
-.evento.evento {
-  border-left-color: var(--brand-teal);
+.evento .titulo::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: var(--text-subtle);
+  vertical-align: middle;
 }
 
-.evento.prazo {
-  border-left-color: var(--brand-orange);
+.evento.reuniao .titulo::before,
+.evento.evento .titulo::before {
+  background: var(--brand-teal);
+}
+
+.evento.prazo .titulo::before {
+  background: var(--brand-orange);
 }
 
 .concluido {
