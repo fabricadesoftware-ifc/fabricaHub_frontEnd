@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useLink, useRoute, type RouteLocationRaw } from 'vue-router'
+import { useLink, type RouteLocationRaw } from 'vue-router'
 import IconeSvg, { type NomeIcone } from '@/components/global/IconeSvg.vue'
 
 const props = defineProps<{
@@ -10,15 +10,11 @@ const props = defineProps<{
   contador?: number
   atencao?: boolean
   novidade?: boolean
+  /** Definido pelo menu: só o item mais específico para a rota atual fica ativo. */
+  ativo?: boolean
 }>()
 
-const { href, navigate, isExactActive } = useLink({ to: computed(() => props.para) })
-const rota = useRoute()
-
-// Ativo na rota exata ou em sub-rotas (ex.: /projetos/3 ativa "Projetos").
-const ativo = computed(
-  () => isExactActive.value || (href.value !== '/' && rota.path.startsWith(`${href.value}/`)),
-)
+const { href, navigate } = useLink({ to: computed(() => props.para) })
 
 const descricaoContador = computed(() => {
   if (!props.contador) return ''
