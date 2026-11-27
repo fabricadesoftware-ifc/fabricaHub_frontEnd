@@ -88,4 +88,28 @@ defineProps<{ id: number; nome: string; cor: string; aba: string; progresso?: nu
   font-size: 10px;
   color: var(--text-subtle);
 }
+
+/* Hover: sobe um pouco e a sombra dura cresce */
+.pasta {
+  transition: transform var(--dur-media) var(--ease-saida), box-shadow var(--dur-media) var(--ease-saida),
+    border-color var(--dur-media);
+}
+
+.pasta:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--sombra-elevada);
+}
+
+/* Barra de progresso enche ao aparecer */
+.preenchido {
+  transform-origin: left;
+  animation: encher 700ms var(--ease-saida) backwards;
+  animation-delay: 150ms;
+}
+
+@keyframes encher {
+  from {
+    transform: scaleX(0);
+  }
+}
 </style>

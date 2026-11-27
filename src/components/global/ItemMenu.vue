@@ -26,7 +26,7 @@ const descricaoContador = computed(() => {
   <a :href="href" class="item" :class="{ ativo }" :aria-current="ativo ? 'page' : undefined" @click="navigate">
     <IconeSvg :nome="icone" class="icone" />
     <span class="rotulo">{{ rotulo }}<span class="sr-only">{{ descricaoContador }}</span></span>
-    <span v-if="contador" class="contador" :class="{ atencao }" aria-hidden="true">{{ contador }}</span>
+    <span v-if="contador" :key="contador" class="contador" :class="{ atencao }" aria-hidden="true">{{ contador }}</span>
     <span v-else-if="novidade" class="novidade"><span class="sr-only">, novidades</span></span>
   </a>
 </template>
@@ -100,6 +100,31 @@ const descricaoContador = computed(() => {
   .ativo:hover {
     margin-right: 0;
     border-radius: 6px;
+  }
+}
+
+.item {
+  transition: background-color var(--dur-rapida), color var(--dur-rapida), box-shadow var(--dur-media) var(--ease-saida);
+}
+
+.icone {
+  transition: color var(--dur-rapida), transform var(--dur-media) var(--ease-mola);
+}
+
+.item:hover .icone {
+  transform: translateX(2px);
+}
+
+/* Contador pulsa quando o número muda */
+.contador,
+.novidade {
+  animation: pulsar-contador var(--dur-lenta) var(--ease-mola);
+}
+
+@keyframes pulsar-contador {
+  from {
+    transform: scale(.4);
+    opacity: 0;
   }
 }
 </style>

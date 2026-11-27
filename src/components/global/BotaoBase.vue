@@ -75,4 +75,24 @@ withDefaults(
 .botao:disabled:active {
   transform: none;
 }
+
+.botao {
+  transition: transform var(--dur-rapida) var(--ease-saida), box-shadow var(--dur-rapida) var(--ease-saida),
+    background-color var(--dur-media), border-color var(--dur-media), opacity var(--dur-media);
+}
+
+.primario:not(:disabled):hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 0 #8A3205;
+}
+
+.secundario:not(:disabled):hover {
+  background: rgba(255, 255, 255, .04);
+}
+
+/* Clique "afunda" o botão mesmo com o mouse em cima */
+.primario:not(:disabled):hover:active {
+  transform: translateY(3px);
+  box-shadow: 0 0 0 #8A3205;
+}
 </style>
