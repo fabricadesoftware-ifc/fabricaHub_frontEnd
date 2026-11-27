@@ -1,0 +1,58 @@
+<script setup lang="ts">
+export type NomeIcone =
+  | 'dashboard'
+  | 'tarefas'
+  | 'projetos'
+  | 'mensagens'
+  | 'equipes'
+  | 'membros'
+  | 'noticias'
+  | 'revisoes'
+  | 'acessos'
+  | 'cadastros'
+  | 'tags'
+  | 'logs'
+  | 'arquivos'
+  | 'permissoes'
+  | 'sair'
+  | 'busca'
+
+withDefaults(defineProps<{ nome: NomeIcone; tamanho?: number }>(), { tamanho: 18 })
+
+// Ícones de traço (viewBox 24×24), desenhados com stroke="currentColor".
+const caminhos: Record<NomeIcone, string> = {
+  dashboard: 'M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z',
+  tarefas: 'M4 4h16v16H4zM8.5 12l2.5 2.5 4.5-5',
+  projetos: 'M3 6.5A1.5 1.5 0 0 1 4.5 5H9l2 2.5h8.5A1.5 1.5 0 0 1 21 9v9.5a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 18.5z',
+  mensagens: 'M4 5h16v11H9l-5 4z',
+  equipes: 'M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM2.5 20a6.5 6.5 0 0 1 13 0M16 4.3a3.5 3.5 0 0 1 0 6.4M18.5 14.5A6.5 6.5 0 0 1 21.5 20',
+  membros: 'M3 5h18v14H3zM9 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM5.5 16a3.5 3.5 0 0 1 7 0M15 9.5h3.5M15 13h3.5',
+  noticias: 'M5 4h12v16H6.5A1.5 1.5 0 0 1 5 18.5zM17 8h2v10.5a1.5 1.5 0 0 1-3 0M8 8h6M8 11.5h6M8 15h4',
+  revisoes: 'M12 3l7.5 3v5.5c0 4.5-3.2 8-7.5 9.5-4.3-1.5-7.5-5-7.5-9.5V6zM9 12l2 2 4-4',
+  acessos: 'M9.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM3 20a6.5 6.5 0 0 1 13 0M19 8v6M16 11h6',
+  cadastros: 'M4 6h16M4 12h16M4 18h10',
+  tags: 'M3.5 12.5V4.5a1 1 0 0 1 1-1h8l8 8a1.4 1.4 0 0 1 0 2l-7 7a1.4 1.4 0 0 1-2 0zM8 8h.01',
+  logs: 'M5 7l5 5-5 5M12 18h7',
+  arquivos: 'M12 15V4M7.5 8.5L12 4l4.5 4.5M4 15v4.5h16V15',
+  permissoes: 'M5 11h14v10H5zM8 11V7.5a4 4 0 0 1 8 0V11',
+  sair: 'M14 4h5v16h-5M10 8l-4 4 4 4M6 12h10',
+  busca: 'M10.5 17a6.5 6.5 0 1 0 0-13 6.5 6.5 0 0 0 0 13zM20 20l-4.8-4.8',
+}
+</script>
+
+<template>
+  <svg
+    :width="tamanho"
+    :height="tamanho"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.8"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+    focusable="false"
+  >
+    <path :d="caminhos[nome]" />
+  </svg>
+</template>
