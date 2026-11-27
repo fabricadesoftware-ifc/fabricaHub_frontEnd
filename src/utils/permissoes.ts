@@ -1,5 +1,5 @@
 import type { RouteLocationNormalized } from 'vue-router'
-import type { Papel, Projeto, Usuario } from '@/utils/tipos'
+import type { Papel, Projeto, StatusTarefa, Tarefa, Usuario } from '@/utils/tipos'
 
 /**
  * Líder não é um tipo de usuário: é quem está como `idLead` de algum projeto.
@@ -37,4 +37,22 @@ export function podeAcessar(rota: RouteLocationNormalized, usuario: Usuario | nu
     return lideraProjeto(usuario, projetos, Number(rota.params.id))
   }
   return true
+}
+
+/** Status que o membro pode escolher para as próprias tarefas (concluir é com o líder). */
+export const STATUS_DO_MEMBRO: readonly StatusTarefa[] = ['A fazer', 'Fazendo', 'Em revisão']
+
+/**
+ * Para onde o usuário pode mover a tarefa. Membro: só as próprias, só enquanto
+ * estão em "A fazer" ou "Fazendo", e no máximo até "Em revisão".
+ * (A aprovação do líder fica na tela de Revisões.)
+ */
+export function destinosDaTarefa(usuario: Usuario | null, tarefa: Tarefa): StatusTarefa[] {
+  if (!usuario || tarefa.idResponsavel !== usuario.id) return []
+  if (tarefa.status === 'Em revisão' || tarefa.status === 'Concluída') return []
+  return STATUS_DO_MEMBRO.filter((s) => s !== tarefa.status)
+}
+
+export function podeMoverTarefa(usuario: Usuario | null, tarefa: Tarefa, para: StatusTarefa): boolean {
+  return destinosDaTarefa(usuario, tarefa).includes(para)
 }
