@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import AvatarPessoa from '@/components/global/AvatarPessoa.vue'
+import { horaOuData } from '@/utils/datas'
 import type { Mensagem, Usuario } from '@/utils/tipos'
 
 /** `contexto`: título da tarefa ou nome do projeto. */
@@ -8,14 +9,14 @@ defineProps<{ mensagem: Mensagem; remetente?: Usuario; contexto: string }>()
 
 <template>
   <li class="mensagem" :class="{ nova: !mensagem.lida }">
-    <AvatarPessoa :nome="remetente?.nome ?? '?'" :cor="remetente?.cor" :tamanho="28" />
+    <AvatarPessoa :nome="remetente?.nome ?? '?'" :iniciais="remetente?.iniciais" :foto="remetente?.foto" :cor="remetente?.cor" :tamanho="28" />
     <div class="conteudo">
       <p class="topo">
         <span class="quem">
           <strong>{{ remetente?.nome ?? 'Alguém' }}</strong>
           <span class="contexto"> · {{ contexto }}</span>
         </span>
-        <span class="tempo">{{ mensagem.haQuantoTempo }}</span>
+        <span class="tempo">{{ horaOuData(mensagem.em) }}</span>
       </p>
       <p class="texto">{{ mensagem.texto }}</p>
       <span v-if="!mensagem.lida" class="sr-only">(não lida)</span>
@@ -32,8 +33,15 @@ defineProps<{ mensagem: Mensagem; remetente?: Usuario; contexto: string }>()
   background: var(--surface-2);
 }
 
-.nova {
-  box-shadow: inset 3px 0 0 var(--brand-orange);
+.nova .tempo::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: var(--brand-orange);
+  vertical-align: middle;
 }
 
 .conteudo {
