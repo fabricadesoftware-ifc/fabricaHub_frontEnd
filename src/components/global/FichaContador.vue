@@ -1,22 +1,16 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import ContadorMecanico from '@/components/global/ContadorMecanico.vue'
 
-const props = withDefaults(
-  defineProps<{ numero: number; label: string; descricao?: string; destaque?: boolean }>(),
-  { descricao: '', destaque: false },
-)
-
-// Contador mecânico: sempre pelo menos 2 dígitos ("06").
-const digitos = computed(() => String(Math.max(0, Math.trunc(props.numero))).padStart(2, '0').split(''))
+withDefaults(defineProps<{ numero: number; label: string; descricao?: string; destaque?: boolean }>(), {
+  descricao: '',
+  destaque: false,
+})
 </script>
 
 <template>
   <article class="ficha" :class="{ destaque }">
     <p class="label">{{ label }}</p>
-    <p class="contador">
-      <span class="sr-only">{{ numero }}</span>
-      <span v-for="(digito, i) in digitos" :key="i" class="plaquinha" aria-hidden="true">{{ digito }}</span>
-    </p>
+    <p><ContadorMecanico :numero="numero" :tom="destaque ? 'destaque' : 'normal'" /></p>
     <p v-if="descricao" class="descricao">{{ descricao }}</p>
   </article>
 </template>
@@ -55,35 +49,6 @@ const digitos = computed(() => String(Math.max(0, Math.trunc(props.numero))).pad
   color: var(--accent);
 }
 
-.contador {
-  display: flex;
-  gap: 4px;
-}
-
-.plaquinha {
-  position: relative;
-  padding: 2px 9px;
-  background: var(--tile);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  font-family: var(--font-mono);
-  font-size: 32px;
-  font-weight: 700;
-  line-height: 1.2;
-  color: var(--text);
-}
-
-/* Linha preta atravessando o meio da plaquinha */
-.plaquinha::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  height: 1px;
-  background: #000;
-}
-
 .descricao {
   font-size: 13px;
   color: var(--text-muted);
@@ -96,11 +61,6 @@ const digitos = computed(() => String(Math.max(0, Math.trunc(props.numero))).pad
 
 .destaque .label,
 .destaque .descricao {
-  color: #fff;
-}
-
-.destaque .plaquinha {
-  background: #B84800;
-  border-color: rgba(0, 0, 0, .15);
+  color: var(--text);
 }
 </style>
