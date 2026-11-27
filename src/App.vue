@@ -1,11 +1,13 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { defineAsyncComponent } from 'vue'
+
+// Seletor de papel só existe em desenvolvimento (fica fora do bundle de produção).
+const SeletorPapel = import.meta.env.DEV
+  ? defineAsyncComponent(() => import('@/components/global/SeletorPapel.vue'))
+  : null
+</script>
 
 <template>
-  <h1>You did it!</h1>
-  <p>
-    Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
-    documentation
-  </p>
+  <RouterView />
+  <component :is="SeletorPapel" v-if="SeletorPapel" />
 </template>
-
-<style scoped></style>
