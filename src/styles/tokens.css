@@ -1,0 +1,43 @@
+:root {
+  /* Marca */
+  --brand-orange: #FF6600;   /* primária, botões, destaques */
+  --accent: #FF8533;         /* links, abas ativas, rótulos */
+  --brand-teal: #12B0AE;
+  --brand-red: #FF2020;      /* erros, prioridade alta */
+  --brand-blue: #2A2AFF;     /* status "Fazendo" */
+
+  /* Superfícies */
+  --ink: #0B0B0D;            /* fundo da página */
+  --sidebar: #08090A;
+  --surface: #141417;        /* cards */
+  --surface-2: #1F2126;      /* itens dentro de cards */
+  --tile: #0A0B0D;           /* plaquinhas do contador */
+
+  /* Texto */
+  --text: #FFFFFF;
+  --text-muted: rgba(255, 255, 255, .65);
+  --text-subtle: rgba(255, 255, 255, .5);
+
+  /* Bordas e sombras */
+  --border: rgba(255, 255, 255, .08);   /* usar entre 6% e 12% */
+  --online: #3FB950;
+  --shadow-hard: 0 3px 0 #000;          /* sombra dura, sem blur */
+
+  /* Raios */
+  --radius-btn: 8px;
+  --radius-menu: 12px;
+  --radius-card: 16px;
+  --radius-pill: 999px;
+
+  /* Tipografia */
+  --font-ui: 'Poppins', sans-serif;          /* 400–700 */
+  --font-mono: 'JetBrains Mono', monospace;  /* 400–800 */
+
+  /* Crachá por papel (faixa + texto do rodapé mais claro para contraste) */
+  --papel-membro: #12B0AE;
+  --papel-membro-claro: #6FDCDA;
+  --papel-lider: #FF6600;
+  --papel-lider-claro: #FFA366;
+  --papel-admin: #2A2AFF;
+  --papel-admin-claro: #9AABFF;
+}
