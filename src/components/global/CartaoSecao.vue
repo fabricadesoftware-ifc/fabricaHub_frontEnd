@@ -28,7 +28,8 @@ withDefaults(
 
     <header class="cabecalho">
       <RotuloSecao :rotulo="rotulo" :titulo="titulo" class="titulo-secao" />
-      <RouterLink v-if="link" :to="link.para" class="link">{{ link.texto }}</RouterLink>
+      <slot v-if="$slots.acao" name="acao" />
+      <RouterLink v-else-if="link" :to="link.para" class="link">{{ link.texto }}</RouterLink>
       <span v-else-if="detalhe" class="detalhe">{{ detalhe }}</span>
     </header>
 

@@ -9,8 +9,10 @@ withDefaults(
     bloco?: boolean
     /** Com `para`, vira um link de navegação (RouterLink) com a mesma aparência. */
     para?: RouteLocationRaw
+    /** Com `href`, vira um link externo (abre em nova aba). */
+    href?: string
   }>(),
-  { variante: 'primario', tipo: 'button', bloco: false, para: undefined },
+  { variante: 'primario', tipo: 'button', bloco: false, para: undefined, href: undefined },
 )
 </script>
 
@@ -18,6 +20,9 @@ withDefaults(
   <RouterLink v-if="para" :to="para" class="botao" :class="[variante, { bloco }]">
     <slot />
   </RouterLink>
+  <a v-else-if="href" :href="href" target="_blank" rel="noopener noreferrer" class="botao" :class="[variante, { bloco }]">
+    <slot />
+  </a>
   <button v-else :type="tipo" class="botao" :class="[variante, { bloco }]">
     <slot />
   </button>

@@ -1,16 +1,23 @@
 <script setup lang="ts">
 import ContadorMecanico from '@/components/global/ContadorMecanico.vue'
 
-withDefaults(defineProps<{ numero: number; label: string; descricao?: string; destaque?: boolean }>(), {
-  descricao: '',
-  destaque: false,
-})
+withDefaults(
+  defineProps<{
+    numero: number
+    label: string
+    descricao?: string
+    destaque?: boolean
+    /** Ficha menor (ex.: resumo do projeto). */
+    compacto?: boolean
+  }>(),
+  { descricao: '', destaque: false, compacto: false },
+)
 </script>
 
 <template>
-  <article class="ficha" :class="{ destaque }">
+  <article class="ficha" :class="{ destaque, compacto }">
     <p class="label">{{ label }}</p>
-    <p><ContadorMecanico :numero="numero" :tom="destaque ? 'destaque' : 'normal'" /></p>
+    <p><ContadorMecanico :numero="numero" :tom="destaque ? 'destaque' : 'normal'" :tamanho="compacto ? 'pequeno' : 'normal'" /></p>
     <p v-if="descricao" class="descricao">{{ descricao }}</p>
   </article>
 </template>
@@ -52,6 +59,26 @@ withDefaults(defineProps<{ numero: number; label: string; descricao?: string; de
 .descricao {
   font-size: 13px;
   color: var(--text-muted);
+}
+
+/* Compacto: ficha menor, aba curta */
+.compacto {
+  margin-top: 10px;
+  padding: 12px 14px;
+  gap: 6px;
+  background: var(--surface-2);
+  border-radius: 0 var(--radius-btn) var(--radius-btn) var(--radius-btn);
+}
+
+.compacto::before {
+  width: 46px;
+  height: 10px;
+  border-radius: 4px 4px 0 0;
+}
+
+.compacto .label {
+  font-size: 9.5px;
+  color: var(--text-subtle);
 }
 
 /* Destaque: fundo laranja, todo texto branco */

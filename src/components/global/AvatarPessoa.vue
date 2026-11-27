@@ -9,11 +9,15 @@ const props = withDefaults(
     tamanho?: number
     /** `circulo` (pilhas de equipe) ou `quadrado` (mensagens, comentários). */
     forma?: 'quadrado' | 'circulo'
+    /** Sem `iniciais`, usa as duas primeiras letras do nome. */
+    iniciais?: string
+    /** Foto (URL ou data URL); quando existe, substitui as iniciais. */
+    foto?: string | null
   }>(),
-  { cor: '#2A2AFF', tamanho: 28, forma: 'quadrado' },
+  { cor: '#2A2AFF', tamanho: 28, forma: 'quadrado', iniciais: '', foto: null },
 )
 
-const iniciais = computed(() => props.nome.slice(0, 2).toUpperCase())
+const textoIniciais = computed(() => (props.iniciais || props.nome.slice(0, 2)).toUpperCase())
 </script>
 
 <template>
@@ -29,7 +33,8 @@ const iniciais = computed(() => props.nome.slice(0, 2).toUpperCase())
       color: corTextoSobre(cor),
     }"
   >
-    {{ iniciais }}
+    <img v-if="foto" :src="foto" alt="" class="foto" />
+    <template v-else>{{ textoIniciais }}</template>
   </span>
 </template>
 
@@ -44,6 +49,16 @@ const iniciais = computed(() => props.nome.slice(0, 2).toUpperCase())
 
 .quadrado {
   border-radius: 8px;
+}
+
+.avatar {
+  overflow: hidden;
+}
+
+.foto {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .circulo {
