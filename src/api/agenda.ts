@@ -16,4 +16,14 @@ export const agendaApi = {
     const lista = [...eventos, ...prazos].filter((e) => e.data >= inicio && e.data <= fim)
     return respostaMock(lista)
   },
+
+  /** Próximos eventos da Fábrica (a partir de `desde`, ISO), do mais perto ao mais longe. */
+  // Futuro: client.get<EventoAgenda[]>('/agenda/eventos', { params: { desde, limite } })
+  listarProximosEventos(desde: string, limite = 3): Promise<EventoAgenda[]> {
+    const lista = eventos
+      .filter((e) => e.tipo === 'evento' && e.data >= desde)
+      .sort((a, b) => a.data.localeCompare(b.data))
+      .slice(0, limite)
+    return respostaMock(lista)
+  },
 }

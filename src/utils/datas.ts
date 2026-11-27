@@ -129,3 +129,48 @@ export function tempoRelativo(iso: string, agora = new Date()): string {
   if (diasAte(iso, agora) === -1) return 'ontem'
   return dataMinuscula(iso)
 }
+
+/** "12:40" (hoje), "ontem" ou "22 nov". */
+export function horaOuData(iso: string, hoje = new Date()): string {
+  const dias = diasAte(iso, hoje)
+  if (dias === 0) {
+    const data = lerData(iso)
+    return `${String(data.getHours()).padStart(2, '0')}:${String(data.getMinutes()).padStart(2, '0')}`
+  }
+  if (dias === -1) return 'ontem'
+  return dataMinuscula(iso)
+}
+
+/** "HOJE", "ONTEM" ou "22 NOV" (divisória de dias na conversa). */
+export function rotuloDia(iso: string, hoje = new Date()): string {
+  const dias = diasAte(iso, hoje)
+  if (dias === 0) return 'HOJE'
+  if (dias === -1) return 'ONTEM'
+  return dataCurta(iso)
+}
+
+/** "SEX, 27 NOV 2026" */
+export function dataJornal(data = new Date()): string {
+  return `${siglaDia(data)}, ${data.getDate()} ${MESES[data.getMonth()]} ${data.getFullYear()}`
+}
+
+/** "NOVEMBRO" */
+export function nomeMes(data = new Date()): string {
+  return data.toLocaleDateString('pt-BR', { month: 'long' }).toUpperCase()
+}
+
+/** "25/11/2026" */
+export function dataCompleta(iso: string): string {
+  return `${diaMes(iso)}/${lerData(iso).getFullYear()}`
+}
+
+const DIAS_EXTENSO = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado']
+
+/** "Hoje", "Amanhã", "Quinta" (até 6 dias) ou "11 dez". */
+export function nomeDoDia(iso: string, hoje = new Date()): string {
+  const dias = diasAte(iso, hoje)
+  if (dias === 0) return 'Hoje'
+  if (dias === 1) return 'Amanhã'
+  if (dias > 1 && dias < 7) return DIAS_EXTENSO[lerData(iso).getDay()]!
+  return dataMinuscula(iso)
+}

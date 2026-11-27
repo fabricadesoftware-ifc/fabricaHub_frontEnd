@@ -165,6 +165,7 @@ export interface EventoAgenda {
   /** ISO (só a data). */
   data: string
   hora?: string
+  local?: string
   idProjeto?: number
   tipo: TipoEvento
   concluido?: boolean
@@ -209,23 +210,59 @@ export interface TimeMembro extends Periodo {
   idUsuario: number
 }
 
+/** Para quem a conversa é: uma pessoa (direta), uma equipe ou um projeto. */
+export type TipoConversa = 'direta' | 'equipe' | 'projeto'
+
+export interface Conversa {
+  id: number
+  tipo: TipoConversa
+  /** Direta: as duas pessoas. Equipe e projeto: vazio (quem participa vem da equipe/projeto). */
+  participantes: number[]
+  /** Id da equipe ou do projeto (vazio na direta). */
+  idAlvo?: number
+  /** Projeto de contexto (aparece no cabeçalho da conversa). */
+  idProjeto?: number
+  /** Tarefa sobre a qual a conversa fala (vira um atalho no cabeçalho). */
+  idTarefa?: number
+}
+
 export interface Mensagem {
   id: number
+  idConversa: number
   idRemetente: number
+  /** Projeto de contexto (lista do dashboard, aba Mensagens do projeto). */
   idProjeto: number
   /** Mensagem sobre uma tarefa específica (aparece o título da tarefa). */
   idTarefa?: number
   texto: string
-  haQuantoTempo: string
+  /** ISO (data e hora). */
+  em: string
   lida: boolean
 }
+
+export type CategoriaNoticia = 'Evento' | 'Aviso' | 'Projeto' | 'Equipe'
+
+/** Corpo da notícia: parágrafos e intertítulos, na ordem. */
+export type BlocoNoticia = { tipo: 'paragrafo'; texto: string } | { tipo: 'intertitulo'; texto: string }
 
 export interface Noticia {
   id: number
   titulo: string
+  /** Publicação, ISO (só a data). */
   data: string
-  texto: string
+  categoria: CategoriaNoticia
+  /** Linha fina (lista e primeira página). */
+  resumo: string
+  /** Primeiro parágrafo, em destaque no detalhe. */
+  lide: string
+  blocos: BlocoNoticia[]
+  autor: string
+  /** Vai para a primeira página. */
+  destaque: boolean
+  leituras: number
   nova: boolean
+  /** Notícia sobre um evento: quando, onde e quem apresenta. */
+  evento?: { data: string; hora: string; local: string; quem: string }
 }
 
 export interface SolicitacaoAcesso {
