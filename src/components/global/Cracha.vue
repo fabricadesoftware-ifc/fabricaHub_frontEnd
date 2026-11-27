@@ -6,7 +6,6 @@ import type { Papel } from '@/utils/tipos'
 const props = defineProps<{
   nome: string
   funcao: string
-  matricula: number
   papel: Papel
   online?: boolean
 }>()
@@ -16,7 +15,6 @@ defineEmits<{ sair: [] }>()
 const nomesPapel: Record<Papel, string> = { membro: 'MEMBRO', lider: 'LÍDER', admin: 'ADMIN' }
 
 const inicial = computed(() => props.nome.charAt(0).toUpperCase())
-const numero = computed(() => String(props.matricula).padStart(3, '0'))
 </script>
 
 <template>
@@ -35,7 +33,7 @@ const numero = computed(() => String(props.matricula).padStart(3, '0'))
         </div>
       </div>
       <div class="rodape">
-        <p class="registro">{{ nomesPapel[papel] }} · Nº {{ numero }}</p>
+        <p class="registro">{{ nomesPapel[papel] }}</p>
         <div class="acoes">
           <button type="button" class="botao-icone" aria-label="Sair" @click="$emit('sair')">
             <IconeSvg nome="sair" :tamanho="16" />
