@@ -25,13 +25,13 @@ export default defineConfigWithVueTs(
     rules: {
       // Nomes de componentes definidos na especificação do FabricaHUB.
       'vue/multi-word-component-names': ['error', { ignores: ['Carimbo', 'Cracha'] }],
-      // Fluxo obrigatório: Component -> Controller -> Repository -> API.
+      // Fluxo obrigatório: Component -> Composable -> API -> mocks/Axios.
       'no-restricted-imports': [
         'error',
         {
           patterns: [
-            { group: ['@/mocks/*', '**/mocks/*'], message: 'Só repositories podem importar mocks.' },
-            { group: ['axios', '@/api/*'], message: 'Só repositories podem usar Axios/API.' },
+            { group: ['@/mocks/*', '**/mocks/*'], message: 'Só src/api/ pode importar mocks.' },
+            { group: ['axios', '@/api/client'], message: 'Só src/api/ pode usar o Axios.' },
           ],
         },
       ],
@@ -39,7 +39,7 @@ export default defineConfigWithVueTs(
   },
   {
     name: 'app/camada-de-dados',
-    files: ['src/repositories/**', 'src/api/**'],
+    files: ['src/api/**'],
     rules: { 'no-restricted-imports': 'off' },
   },
 

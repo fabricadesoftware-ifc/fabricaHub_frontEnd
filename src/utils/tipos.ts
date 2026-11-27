@@ -4,7 +4,6 @@ export interface Usuario {
   id: number
   nome: string
   funcao: string
-  matricula: number
   isSuper: boolean
   online: boolean
 }
@@ -63,4 +62,17 @@ export interface SolicitacaoAcesso {
   nome: string
   tag: string
   pendente: boolean
+  loginGitHub?: string
+}
+
+/** Usuário do GitHub que fez login (pode não ser membro da Fábrica). */
+export interface GithubUser {
+  login: string
+  nome: string
+  iniciais: string
+}
+
+/** Resultado do login com GitHub: `idUsuario` nulo = conta sem acesso. */
+export interface ContaGitHub extends GithubUser {
+  idUsuario: number | null
 }
