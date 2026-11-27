@@ -18,21 +18,24 @@ declare module 'vue-router' {
   }
 }
 
+// Telas de líder e admin ainda não existem: as rotas abrem uma página vazia (só a sidebar).
+const PaginaVazia = () => import('@/pages/PaginaVazia.vue')
+
 const LIDER: Papel[] = ['lider', 'admin']
 const ADMIN: Papel[] = ['admin']
 
 const rotasAdmin: RouteRecordRaw[] = [
-  { path: 'acessos', name: 'admin-acessos', component: () => import('@/pages/admin/AdminAcessosPage.vue') },
-  { path: 'membros', name: 'admin-membros', component: () => import('@/pages/admin/AdminMembrosPage.vue') },
-  { path: 'projetos', name: 'admin-projetos', component: () => import('@/pages/admin/AdminProjetosPage.vue') },
-  { path: 'equipes', name: 'admin-equipes', component: () => import('@/pages/admin/AdminEquipesPage.vue') },
-  { path: 'tarefas', name: 'admin-tarefas', component: () => import('@/pages/admin/AdminTarefasPage.vue') },
-  { path: 'noticias', name: 'admin-noticias', component: () => import('@/pages/admin/AdminNoticiasPage.vue') },
-  { path: 'cadastros', name: 'admin-cadastros', component: () => import('@/pages/admin/AdminCadastrosPage.vue') },
-  { path: 'tags', name: 'admin-tags', component: () => import('@/pages/admin/AdminTagsPage.vue') },
-  { path: 'logs', name: 'admin-logs', component: () => import('@/pages/admin/AdminLogsPage.vue') },
-  { path: 'arquivos', name: 'admin-arquivos', component: () => import('@/pages/admin/AdminArquivosPage.vue') },
-  { path: 'permissoes', name: 'admin-permissoes', component: () => import('@/pages/admin/AdminPermissoesPage.vue') },
+  { path: 'acessos', name: 'admin-acessos', component: PaginaVazia },
+  { path: 'membros', name: 'admin-membros', component: PaginaVazia },
+  { path: 'projetos', name: 'admin-projetos', component: PaginaVazia },
+  { path: 'equipes', name: 'admin-equipes', component: PaginaVazia },
+  { path: 'tarefas', name: 'admin-tarefas', component: PaginaVazia },
+  { path: 'noticias', name: 'admin-noticias', component: PaginaVazia },
+  { path: 'cadastros', name: 'admin-cadastros', component: PaginaVazia },
+  { path: 'tags', name: 'admin-tags', component: PaginaVazia },
+  { path: 'logs', name: 'admin-logs', component: PaginaVazia },
+  { path: 'arquivos', name: 'admin-arquivos', component: PaginaVazia },
+  { path: 'permissoes', name: 'admin-permissoes', component: PaginaVazia },
 ]
 
 const routes: RouteRecordRaw[] = [
@@ -54,14 +57,14 @@ const routes: RouteRecordRaw[] = [
       // Todos
       { path: '', name: 'dashboard', component: () => import('@/pages/dashboard/DashboardPage.vue') },
       { path: 'tarefas', name: 'tarefas', component: () => import('@/pages/tasks/TarefasPage.vue') },
-      { path: 'tarefas/nova', name: 'tarefa-nova', component: () => import('@/pages/tasks/NovaTarefaPage.vue'), meta: { roles: LIDER } },
+      { path: 'tarefas/nova', name: 'tarefa-nova', component: PaginaVazia, meta: { roles: LIDER } },
       { path: 'tarefas/:id', name: 'tarefa', component: () => import('@/pages/tasks/TarefaDetalhePage.vue') },
       { path: 'projetos', name: 'projetos', component: () => import('@/pages/projects/ProjetosPage.vue') },
       { path: 'projetos/:id', name: 'projeto', component: () => import('@/pages/projects/ProjetoDetalhePage.vue') },
       {
         path: 'projetos/:id/tarefas',
         name: 'projeto-tarefas',
-        component: () => import('@/pages/projects/ProjetoTarefasPage.vue'),
+        component: PaginaVazia,
         meta: { roles: LIDER, liderDoProjeto: true },
       },
       { path: 'equipes', name: 'equipes', component: () => import('@/pages/teams/EquipesPage.vue') },
@@ -73,7 +76,7 @@ const routes: RouteRecordRaw[] = [
       { path: 'membros/:id', name: 'membro', component: () => import('@/pages/members/MembroDetalhePage.vue') },
       { path: 'perfil', name: 'perfil', component: () => import('@/pages/members/PerfilPage.vue') },
       // Líder
-      { path: 'revisoes', name: 'revisoes', component: () => import('@/pages/tasks/RevisoesPage.vue'), meta: { roles: LIDER } },
+      { path: 'revisoes', name: 'revisoes', component: PaginaVazia, meta: { roles: LIDER } },
       // Admin
       { path: 'admin', meta: { roles: ADMIN }, children: rotasAdmin },
     ],
