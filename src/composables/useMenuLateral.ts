@@ -1,4 +1,4 @@
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter, type RouteLocationRaw } from 'vue-router'
 import type { NomeIcone } from '@/components/global/IconeSvg.vue'
 import { useAcessos } from '@/composables/useAcessos'
@@ -8,6 +8,7 @@ import { useRole } from '@/composables/useRole'
 import { useTarefas } from '@/composables/useTarefas'
 import { useAuthStore } from '@/stores/auth'
 import { useProjetosStore } from '@/stores/projetos'
+import { isoDia } from '@/utils/datas'
 
 export interface ItemMenu {
   rotulo: string
@@ -43,7 +44,12 @@ export function useMenuLateral() {
   const { solicitacoes, carregar: carregarSolicitacoes } = useAcessos()
 
   // Contadores da sidebar: carrega tudo junto ao montar.
-  onMounted(() => Promise.all([carregarTarefas(), carregarMensagens(), carregarNoticias(), carregarSolicitacoes()]))
+  // Até tudo chegar, a sidebar mostra o skeleton (evita contadores zerados piscando).
+  const carregando = ref(true)
+  onMounted(async () => {
+    await Promise.all([carregarTarefas(), carregarMensagens(), carregarNoticias(), carregarSolicitacoes()])
+    carregando.value = false
+  })
   const { papel, leadsProject } = useRole()
 
   const idUsuario = computed(() => auth.usuario?.id)
@@ -51,7 +57,7 @@ export function useMenuLateral() {
   const minhasTarefasAbertas = computed(() =>
     tarefas.value.filter((t) => t.idResponsavel === idUsuario.value && t.status !== 'Concluída'),
   )
-  const naoLidas = computed(() => mensagens.value.filter((m) => !m.lida).length)
+  const naoLidas = computed(() => mensagens.value.filter((m) => !m.lida && m.idRemetente !== idUsuario.value).length)
   const temNoticiaNova = computed(() => noticias.value.some((n) => n.nova))
   const revisoesPendentes = computed(
     () => tarefas.value.filter((t) => t.status === 'Em revisão' && leadsProject(t.idProjeto)).length,
@@ -189,5 +195,21 @@ export function useMenuLateral() {
     }))
   })
 
-  return { secoes: secoesComAtivo, pastas, minhasTarefasAbertas, naoLidas, revisoesPendentes, acessosPendentes }
+  /** Tarefa aberta com o prazo mais próximo (de hoje em diante). */
+  const proximaEntrega = computed(() => {
+    const hoje = isoDia(new Date())
+    const tarefa = minhasTarefasAbertas.value
+      .filter((t) => t.prazo && t.prazo >= hoje)
+      .sort((a, b) => a.prazo!.localeCompare(b.prazo!))[0]
+    if (!tarefa) return null
+    const projeto = projetos.lista.find((p) => p.id === tarefa.idProjeto)
+    return {
+      idTarefa: tarefa.id,
+      titulo: tarefa.titulo,
+      projeto: projeto?.nome.split(' ')[0] ?? '',
+      prazo: tarefa.prazo!,
+    }
+  })
+
+  return { carregando, secoes: secoesComAtivo, pastas, proximaEntrega, minhasTarefasAbertas, naoLidas, revisoesPendentes, acessosPendentes }
 }
