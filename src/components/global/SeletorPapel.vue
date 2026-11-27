@@ -1,34 +1,61 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useAuth } from '@/composables/useAuth'
 import { useRole } from '@/composables/useRole'
-import { podeAcessar } from '@/services/permissoes'
+import { podeAcessar } from '@/utils/permissoes'
 import { useAuthStore } from '@/stores/auth'
 import { useProjetosStore } from '@/stores/projetos'
 import type { Papel } from '@/utils/tipos'
 
 // Só em desenvolvimento (App.vue não carrega este componente em produção).
+type Opcao = Papel | 'nao-autorizado'
+
 const auth = useAuthStore()
 const projetos = useProjetosStore()
+const { entrar, garantirCarregado, simularPapel, simularNaoAutorizado } = useAuth()
 const { papel } = useRole()
 const rota = useRoute()
 const router = useRouter()
 const trocando = ref(false)
 
-const opcoes: { valor: Papel; rotulo: string }[] = [
+const opcoes: { valor: Opcao; rotulo: string }[] = [
   { valor: 'membro', rotulo: 'Membro' },
   { valor: 'lider', rotulo: 'Líder' },
   { valor: 'admin', rotulo: 'Admin' },
+  { valor: 'nao-autorizado', rotulo: 'Não autorizado' },
 ]
 
-async function trocar(novo: Papel) {
-  if (novo === papel.value || trocando.value) return
+const ativo = computed<Opcao | null>(() => {
+  if (auth.naoAutorizadoSimulado) return 'nao-autorizado'
+  return auth.usuario ? papel.value : auth.papelSimulado
+})
+
+async function trocar(novo: Opcao) {
+  if (novo === ativo.value || trocando.value) return
   trocando.value = true
   try {
-    await auth.garantirCarregado()
-    await auth.simularPapel(novo)
-    // O guard não roda de novo na mesma rota: confere a permissão aqui.
-    if (!rota.meta.publica && !podeAcessar(rota, auth.usuario, projetos.lista)) {
+    // Fora do login, só guarda a preferência para o próximo "Entrar com GitHub".
+    if (novo === 'nao-autorizado') {
+      simularNaoAutorizado(true)
+      if (auth.logado) {
+        await entrar()
+        await router.replace({ name: 'acesso-negado' })
+      }
+      return
+    }
+
+    const estavaSemAcesso = auth.naoAutorizadoSimulado
+    simularNaoAutorizado(false)
+    if (auth.logado && estavaSemAcesso) await entrar()
+    await garantirCarregado()
+    await simularPapel(novo)
+    if (!auth.logado) return
+
+    if (estavaSemAcesso && rota.name === 'acesso-negado') {
+      await router.replace({ name: 'dashboard' })
+    } else if (!rota.meta.publica && !podeAcessar(rota, auth.usuario, projetos.lista)) {
+      // O guard não roda de novo na mesma rota: confere a permissão aqui.
       await router.replace({ name: 'acesso-negado' })
     }
   } finally {
@@ -46,8 +73,8 @@ async function trocar(novo: Papel) {
         :key="opcao.valor"
         type="button"
         class="opcao"
-        :class="[`papel-${opcao.valor}`, { ativa: papel === opcao.valor }]"
-        :aria-pressed="papel === opcao.valor"
+        :class="[`papel-${opcao.valor}`, { ativa: ativo === opcao.valor }]"
+        :aria-pressed="ativo === opcao.valor"
         :disabled="trocando"
         @click="trocar(opcao.valor)"
       >
@@ -66,6 +93,7 @@ async function trocar(novo: Papel) {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  max-width: calc(100vw - 32px);
   padding: 8px;
   background: var(--surface);
   border: 1px solid rgba(255, 255, 255, .12);
@@ -84,6 +112,7 @@ async function trocar(novo: Papel) {
 
 .opcoes {
   display: flex;
+  flex-wrap: wrap;
   gap: 4px;
 }
 
@@ -104,13 +133,20 @@ async function trocar(novo: Papel) {
   color: var(--text);
 }
 
-.papel-membro { --cor: var(--papel-membro); --cor-texto: #08090A; }
-.papel-lider { --cor: var(--papel-lider); --cor-texto: #fff; }
-.papel-admin { --cor: var(--papel-admin); --cor-texto: #fff; }
+.papel-membro { --cor: var(--papel-membro); --cor-texto: var(--sidebar); }
+.papel-lider { --cor: var(--papel-lider); --cor-texto: var(--text); }
+.papel-admin { --cor: var(--papel-admin); --cor-texto: var(--text); }
 
 .opcao.ativa {
   background: var(--cor);
   border-color: var(--cor);
   color: var(--cor-texto);
+}
+
+/* Vermelho com texto branco não tem contraste: só borda e texto. */
+.papel-nao-autorizado.ativa {
+  background: transparent;
+  border-color: var(--brand-red);
+  color: var(--brand-red);
 }
 </style>
