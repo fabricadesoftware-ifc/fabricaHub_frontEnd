@@ -20,6 +20,29 @@ export default defineConfigWithVueTs(
   ...pluginVue.configs['flat/essential'],
   vueTsConfigs.recommended,
 
+  {
+    name: 'app/regras',
+    rules: {
+      // Nomes de componentes definidos na especificação do FabricaHUB.
+      'vue/multi-word-component-names': ['error', { ignores: ['Carimbo', 'Cracha'] }],
+      // Fluxo obrigatório: Component -> Controller -> Repository -> API.
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            { group: ['@/mocks/*', '**/mocks/*'], message: 'Só repositories podem importar mocks.' },
+            { group: ['axios', '@/api/*'], message: 'Só repositories podem usar Axios/API.' },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    name: 'app/camada-de-dados',
+    files: ['src/repositories/**', 'src/api/**'],
+    rules: { 'no-restricted-imports': 'off' },
+  },
+
   ...pluginOxlint.buildFromOxlintConfigFile('.oxlintrc.json'),
 
   skipFormatting,
