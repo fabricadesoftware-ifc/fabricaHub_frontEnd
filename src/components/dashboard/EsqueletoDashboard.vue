@@ -168,7 +168,11 @@ import EsqueletoBloco from '@/components/global/EsqueletoBloco.vue'
 }
 
 .pasta {
-  background: var(--surface-pasta);
+  background: var(--surface-2);
+}
+
+.pasta :deep(.esqueleto) {
+  background: var(--ink);
 }
 
 .dias {
