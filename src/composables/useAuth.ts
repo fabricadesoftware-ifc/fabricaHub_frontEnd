@@ -3,21 +3,24 @@ import { projetosApi } from '@/api/projetos'
 import { usuariosApi } from '@/api/usuarios'
 import { useAuthStore } from '@/stores/auth'
 import { useProjetosStore } from '@/stores/projetos'
-import type { Papel } from '@/utils/tipos'
+import type { PerfilDev } from '@/utils/tipos'
+
+const PERFIS: PerfilDev[] = ['membro', 'lider', 'admin', 'nao-autorizado']
 
 // Carga do usuário + projetos feita uma vez por sessão (o guard depende dela).
 let carregamento: Promise<void> | null = null
 
 /**
- * Sessão: login com GitHub (simulado), carga do usuário e simulação de papel em dev.
+ * Sessão: login com GitHub (simulado) e carga do usuário e dos projetos.
  * Não depende do router, então também funciona dentro do guard.
  */
 export function useAuth() {
   const auth = useAuthStore()
   const projetos = useProjetosStore()
 
+  /** Em dev, o perfil escolhido no seletor define qual conta entra (padrão: membro). */
   async function entrar() {
-    const conta = await githubApi.autenticar(auth.naoAutorizadoSimulado)
+    const conta = await githubApi.autenticar(auth.perfilSimulado ?? 'membro')
     carregamento = null
     auth.iniciarSessao(conta)
   }
@@ -35,7 +38,6 @@ export function useAuth() {
       const [usuario, lista] = await Promise.all([usuariosApi.obterPorId(id), projetosApi.listar()])
       auth.definirUsuario(usuario)
       projetos.substituir(lista)
-      if (auth.papelSimulado) await aplicarPapel(auth.papelSimulado)
     })().catch((erro: unknown) => {
       carregamento = null // permite tentar de novo
       throw erro
@@ -44,46 +46,25 @@ export function useAuth() {
   }
 
   /**
-   * Só em desenvolvimento: muda o usuário mockado para simular um papel.
-   * admin = isSuper; líder = Jota como idLead; membro = Jota sem liderar nada.
+   * Só em desenvolvimento (seletor de papel): troca de perfil = entra com outra conta.
+   * Membro = Jota · Líder = Daniel · Admin = Peraza · Não autorizado = @igor.dev.
+   * Fora do login, só guarda a escolha para o próximo "Entrar com GitHub".
    */
-  async function aplicarPapel(papel: Papel) {
-    if (!auth.usuario) return
-    const id = auth.usuario.id
-    const usuario = await usuariosApi.definirSuper(id, papel === 'admin')
-    const lista = await projetosApi.definirLideranca(id, papel === 'lider')
-    auth.definirUsuario(usuario)
-    projetos.substituir(lista)
+  async function trocarPerfil(perfil: PerfilDev) {
+    auth.definirPerfilSimulado(perfil)
+    if (!auth.logado) return
+    await entrar()
+    await garantirCarregado()
   }
 
-  /** Só em desenvolvimento (seletor de papel). */
-  async function simularPapel(papel: Papel) {
-    auth.definirPapelSimulado(papel)
-    await aplicarPapel(papel)
-  }
-
-  /** Só em desenvolvimento: o próximo login usa a conta sem acesso (ou a autorizada). */
-  function simularNaoAutorizado(ativo: boolean) {
-    auth.definirNaoAutorizadoSimulado(ativo)
-  }
-
-  /**
-   * Só em desenvolvimento: abrir com ?papel=membro|lider|admin|nao-autorizado
-   * já entra com essa conta/papel (útil para testar rotas por link).
-   */
+  /** Só em desenvolvimento: abrir com ?papel=membro|lider|admin|nao-autorizado já entra com esse perfil. */
   async function aplicarAtalhoDev() {
     if (!import.meta.env.DEV) return
-    const valor = new URLSearchParams(window.location.search).get('papel')
-    if (valor === 'nao-autorizado') {
-      simularNaoAutorizado(true)
-      await entrar()
-    } else if (valor === 'membro' || valor === 'lider' || valor === 'admin') {
-      simularNaoAutorizado(false)
-      auth.definirPapelSimulado(valor)
-      if (!auth.logado || !auth.autorizado) await entrar()
-      else if (auth.usuario) await aplicarPapel(valor)
-    }
+    const valor = new URLSearchParams(window.location.search).get('papel') as PerfilDev | null
+    if (!valor || !PERFIS.includes(valor)) return
+    auth.definirPerfilSimulado(valor)
+    await entrar()
   }
 
-  return { entrar, sair, garantirCarregado, simularPapel, simularNaoAutorizado, aplicarAtalhoDev }
+  return { entrar, sair, garantirCarregado, trocarPerfil, aplicarAtalhoDev }
 }

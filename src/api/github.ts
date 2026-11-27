@@ -1,15 +1,14 @@
-import { contasGitHub, LOGIN_AUTORIZADO, LOGIN_NAO_AUTORIZADO } from '@/mocks/github'
+import { contasGitHub, LOGIN_POR_PERFIL } from '@/mocks/github'
 import { respostaMock } from '@/utils/respostaMock'
-import type { ContaGitHub } from '@/utils/tipos'
+import type { ContaGitHub, PerfilDev } from '@/utils/tipos'
 
 export const githubApi = {
   /**
    * Futuro: troca do código OAuth do GitHub por sessão (client.post('/auth/github')).
-   * No mock, `simularSemAcesso` escolhe a conta sem acesso (seletor de papel em dev).
+   * No mock, `perfil` escolhe qual conta entra (seletor de papel em dev).
    */
-  autenticar(simularSemAcesso = false): Promise<ContaGitHub> {
-    const login = simularSemAcesso ? LOGIN_NAO_AUTORIZADO : LOGIN_AUTORIZADO
-    const conta = contasGitHub.find((c) => c.login === login) ?? contasGitHub[0]!
+  autenticar(perfil: PerfilDev = 'membro'): Promise<ContaGitHub> {
+    const conta = contasGitHub.find((c) => c.login === LOGIN_POR_PERFIL[perfil]) ?? contasGitHub[0]!
     return respostaMock(conta)
   },
 }

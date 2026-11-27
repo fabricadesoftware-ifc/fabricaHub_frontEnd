@@ -1,7 +1,7 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { lerJson, remover, salvarJson } from '@/utils/armazenamento'
-import type { ContaGitHub, GithubUser, Papel, Usuario } from '@/utils/tipos'
+import type { ContaGitHub, GithubUser, PerfilDev, Usuario } from '@/utils/tipos'
 
 const CHAVE_SESSAO = 'fabricahub:sessao'
 const CHAVE_DEV = 'fabricahub:dev'
@@ -14,12 +14,11 @@ interface Sessao {
 
 /** Preferências do seletor de papel (só em desenvolvimento). */
 interface PreferenciasDev {
-  papel: Papel | null
-  naoAutorizado: boolean
+  perfil: PerfilDev | null
 }
 
 /**
- * Estado compartilhado da sessão: conta GitHub, usuário logado e papel simulado.
+ * Estado compartilhado da sessão: conta GitHub, usuário logado e perfil simulado (dev).
  * Só guarda e persiste estado; as chamadas à camada `api` ficam em `useAuth`.
  */
 export const useAuthStore = defineStore('auth', () => {
@@ -32,8 +31,8 @@ export const useAuthStore = defineStore('auth', () => {
   /** Usuário do sistema (só existe quando a conta GitHub é autorizada). */
   const usuario = ref<Usuario | null>(null)
 
-  const papelSimulado = ref<Papel | null>(devSalvo?.papel ?? null)
-  const naoAutorizadoSimulado = ref(devSalvo?.naoAutorizado ?? false)
+  /** Perfil escolhido no seletor de papel; cada perfil entra com uma conta diferente. */
+  const perfilSimulado = ref<PerfilDev | null>(devSalvo?.perfil ?? null)
 
   const logado = computed(() => githubUser.value !== null)
 
@@ -47,7 +46,7 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   function salvarDev() {
-    salvarJson(CHAVE_DEV, { papel: papelSimulado.value, naoAutorizado: naoAutorizadoSimulado.value } satisfies PreferenciasDev)
+    salvarJson(CHAVE_DEV, { perfil: perfilSimulado.value } satisfies PreferenciasDev)
   }
 
   function iniciarSessao(conta: ContaGitHub) {
@@ -70,13 +69,8 @@ export const useAuthStore = defineStore('auth', () => {
     usuario.value = novo
   }
 
-  function definirPapelSimulado(papel: Papel | null) {
-    papelSimulado.value = papel
-    salvarDev()
-  }
-
-  function definirNaoAutorizadoSimulado(ativo: boolean) {
-    naoAutorizadoSimulado.value = ativo
+  function definirPerfilSimulado(perfil: PerfilDev) {
+    perfilSimulado.value = perfil
     salvarDev()
   }
 
@@ -86,12 +80,10 @@ export const useAuthStore = defineStore('auth', () => {
     idUsuario,
     usuario,
     logado,
-    papelSimulado,
-    naoAutorizadoSimulado,
+    perfilSimulado,
     iniciarSessao,
     encerrarSessao,
     definirUsuario,
-    definirPapelSimulado,
-    definirNaoAutorizadoSimulado,
+    definirPerfilSimulado,
   }
 })
