@@ -102,3 +102,30 @@ export function saudacao(data = new Date()): string {
   if (h < 18) return 'Boa tarde'
   return 'Boa noite'
 }
+
+/** "MAR/25" */
+export function mesAno(iso: string): string {
+  const data = lerData(iso)
+  return `${MESES[data.getMonth()]}/${String(data.getFullYear()).slice(2)}`
+}
+
+/** "26/11" */
+export function diaMes(iso: string): string {
+  const data = lerData(iso)
+  return `${String(data.getDate()).padStart(2, '0')}/${String(data.getMonth() + 1).padStart(2, '0')}`
+}
+
+/** "MAR/25 → ATUAL" (sem fim = atual). */
+export function periodo(inicio: string, fim?: string): string {
+  return `${mesAno(inicio)} → ${fim ? mesAno(fim) : 'ATUAL'}`
+}
+
+/** "há 28 min", "há 2 h", "ontem", "24 nov" */
+export function tempoRelativo(iso: string, agora = new Date()): string {
+  const minutos = Math.max(0, Math.round((agora.getTime() - lerData(iso).getTime()) / 60000))
+  if (minutos < 1) return 'agora'
+  if (minutos < 60) return `há ${minutos} min`
+  if (minutos < 24 * 60) return `há ${Math.round(minutos / 60)} h`
+  if (diasAte(iso, agora) === -1) return 'ontem'
+  return dataMinuscula(iso)
+}

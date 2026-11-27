@@ -4,7 +4,7 @@ withDefaults(
     /** Ex.: "< MINHA MESA /> · QUA 25 NOV". */
     rotulo: string
     titulo: string
-    /** Parte final do título, em laranja e com o cursor "_". */
+    /** Parte final do título, em laranja. */
     destaque?: string
   }>(),
   { destaque: '' },
@@ -13,11 +13,14 @@ withDefaults(
 
 <template>
   <header class="cabecalho-pagina">
+    <div v-if="$slots.icone" class="icone">
+      <slot name="icone" />
+    </div>
     <div class="textos">
       <slot name="antes" />
       <p class="rotulo">{{ rotulo }}</p>
       <h1 class="titulo">
-        {{ titulo }}<span v-if="destaque" class="destaque">{{ destaque }}</span><span class="cursor" aria-hidden="true">_</span>
+        {{ titulo }}<span v-if="destaque" class="destaque">{{ destaque }}</span>
       </h1>
       <slot name="depois" />
     </div>
@@ -36,7 +39,13 @@ withDefaults(
   gap: 16px;
 }
 
+.icone {
+  flex-shrink: 0;
+  align-self: center;
+}
+
 .textos {
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -57,8 +66,7 @@ withDefaults(
   line-height: 1.2;
 }
 
-.destaque,
-.cursor {
+.destaque {
   color: var(--brand-orange);
 }
 

@@ -42,7 +42,7 @@ const selecionado = defineModel<number | null>({ default: null })
   min-height: 36px;
   padding: 0 14px;
   border: 1px solid rgba(255, 255, 255, .12);
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-btn);
   background: var(--surface);
   color: var(--text);
   font-size: 12.5px;

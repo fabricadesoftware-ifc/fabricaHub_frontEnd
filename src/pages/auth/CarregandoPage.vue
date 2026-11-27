@@ -23,7 +23,7 @@ const { progresso, etapa, erro, tentarDeNovo } = useCarregamentoPainel()
       <article class="ficha">
         <div class="topo">
           <RotuloSecao :rotulo="erro ? '[!] ERRO' : '[..] CARREGANDO'" :tom="erro ? 'perigo' : 'accent'">
-            <span id="titulo-carregando">Preparando seu painel<span class="cursor" aria-hidden="true">_</span></span>
+            <span id="titulo-carregando">Preparando seu painel</span>
           </RotuloSecao>
           <span class="porcentagem">
             <ContadorMecanico :numero="progresso" :digitos="3" tamanho="pequeno" :animar="false" />
@@ -154,10 +154,6 @@ const { progresso, etapa, erro, tentarDeNovo } = useCarregamentoPainel()
   align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
-}
-
-.cursor {
-  color: var(--brand-orange);
 }
 
 .porcentagem {

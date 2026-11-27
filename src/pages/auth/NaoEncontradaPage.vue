@@ -37,7 +37,7 @@ function voltar() {
           <span class="string">"essa-pagina"</span>
         </p>
         <p class="saida">› 0 resultados em 6 gavetas</p>
-        <p><span class="prompt">{{ login }}@fabrica:~$</span> <span class="cursor" aria-hidden="true">_</span></p>
+        <p><span class="prompt">{{ login }}@fabrica:~$</span></p>
       </div>
 
       <div class="acoes">
@@ -94,11 +94,6 @@ function voltar() {
 
 .saida {
   color: var(--text-subtle);
-}
-
-.cursor {
-  color: var(--brand-orange);
-  font-weight: 700;
 }
 
 .acoes {

@@ -142,13 +142,15 @@ function membrosDa(ids: number[]): Usuario[] {
             :link="{ para: { name: 'projetos' }, texto: 'Ver todos →' }"
           >
             <div v-if="meusProjetos.length" class="grade-projetos">
-              <CartaoProjeto
-                v-for="item in meusProjetos"
-                :key="item.projeto.id"
-                :projeto="item.projeto"
-                :funcao="item.funcao"
-                :minhas-abertas="item.minhasAbertas"
-              />
+              <CartaoProjeto v-for="item in meusProjetos" :key="item.projeto.id" :projeto="item.projeto">
+                <p class="funcao">Você: {{ item.funcao }}</p>
+                <template #rodape>
+                  <span>{{ item.projeto.membros.length }} membros</span>
+                  <span class="realce">
+                    {{ item.minhasAbertas }} {{ item.minhasAbertas === 1 ? 'sua tarefa' : 'suas tarefas' }}
+                  </span>
+                </template>
+              </CartaoProjeto>
             </div>
             <EstadoVazio v-else compacto titulo="Você ainda não está em nenhum projeto." />
           </CartaoSecao>

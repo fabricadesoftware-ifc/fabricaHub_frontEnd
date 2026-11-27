@@ -1,4 +1,4 @@
-import type { Projeto } from '@/utils/tipos'
+import type { ImagemGaleria, Projeto } from '@/utils/tipos'
 
 export const projetos: Projeto[] = [
   {
@@ -9,12 +9,17 @@ export const projetos: Projeto[] = [
     status: 'Em andamento',
     idOrientador: 4,
     idLead: 2,
-    tecnologias: ['Vue', 'Node.js', 'PostgreSQL'],
+    resumo: 'Reúne notas e atividades dos cursos integrados em um painel só.',
+    descricao:
+      'Plataforma que reúne as notas e atividades dos cursos técnicos integrados em um painel só. Professores lançam notas por turma e os alunos acompanham o próprio desempenho ao longo do ano.',
+    tecnologias: ['Vue', 'Django REST', 'PostgreSQL'],
     membros: [
       { idUsuario: 1, funcao: 'Front-end' },
       { idUsuario: 2, funcao: 'Back-end' },
       { idUsuario: 5, funcao: 'Design' },
     ],
+    repositorio: 'https://github.com/fabricadesoftware-ifc/painel-integracao',
+    figma: 'https://figma.com/file/painel-integracao',
     progresso: 68,
   },
   {
@@ -25,12 +30,17 @@ export const projetos: Projeto[] = [
     status: 'Em andamento',
     idOrientador: 4,
     idLead: 2,
-    tecnologias: ['Vue', 'Django'],
+    resumo: 'Atlas digital de lâminas para as aulas de histologia.',
+    descricao:
+      'Atlas digital com as lâminas usadas nas aulas de histologia. Os alunos navegam pelas imagens com zoom e legendas, e o professor monta roteiros de estudo.',
+    tecnologias: ['Vue', 'Python'],
     membros: [
       { idUsuario: 2, funcao: 'Back-end' },
       { idUsuario: 1, funcao: 'Front-end' },
       { idUsuario: 6, funcao: 'Mobile' },
     ],
+    repositorio: 'https://github.com/fabricadesoftware-ifc/histologia',
+    figma: 'https://figma.com/file/histologia',
     progresso: 42,
   },
   {
@@ -41,12 +51,17 @@ export const projetos: Projeto[] = [
     status: 'Planejamento',
     idOrientador: 3,
     idLead: 7,
-    tecnologias: ['Vue', 'Pinia', 'Axios', 'Laravel'],
+    resumo: 'Sistema interno da Fábrica para projetos, equipes e tarefas.',
+    descricao:
+      'Sistema interno da Fábrica de Software: projetos, equipes, tarefas, mensagens e notícias num lugar só, com login pelo GitHub.',
+    tecnologias: ['Vue', 'Django'],
     membros: [
       { idUsuario: 1, funcao: 'Front-end' },
       { idUsuario: 7, funcao: 'Back-end' },
       { idUsuario: 8, funcao: 'DevOps' },
     ],
+    repositorio: 'https://github.com/fabricadesoftware-ifc/fabricahub',
+    figma: 'https://figma.com/file/fabricahub',
     progresso: 15,
   },
   {
@@ -57,11 +72,16 @@ export const projetos: Projeto[] = [
     status: 'Pausado',
     idOrientador: 4,
     idLead: 6,
-    tecnologias: ['Python', 'Raspberry Pi'],
+    resumo: 'Controle de acesso por tag na porta do laboratório.',
+    descricao:
+      'Controle de acesso por tag RFID na porta do laboratório, com registro de entradas e painel para os professores.',
+    tecnologias: ['ESP32', 'Django'],
     membros: [
       { idUsuario: 6, funcao: 'Embarcados' },
       { idUsuario: 5, funcao: 'Design' },
     ],
+    repositorio: 'https://github.com/fabricadesoftware-ifc/catraca',
+    figma: 'https://figma.com/file/catraca',
     progresso: 30,
   },
   {
@@ -72,11 +92,16 @@ export const projetos: Projeto[] = [
     status: 'Em andamento',
     idOrientador: 3,
     idLead: 7,
-    tecnologias: ['React Native', 'Firebase'],
+    resumo: 'Monitoramento da qualidade da água do campus.',
+    descricao:
+      'Sensores espalhados pelo campus medem a qualidade da água e mandam os dados para um painel público.',
+    tecnologias: ['Python', 'ESP32'],
     membros: [
       { idUsuario: 7, funcao: 'Mobile' },
       { idUsuario: 8, funcao: 'Back-end' },
     ],
+    repositorio: 'https://github.com/fabricadesoftware-ifc/aguas',
+    figma: 'https://figma.com/file/aguas',
     progresso: 55,
   },
   {
@@ -87,12 +112,30 @@ export const projetos: Projeto[] = [
     status: 'Concluído',
     idOrientador: 4,
     idLead: 8,
-    tecnologias: ['Astro', 'CSS'],
+    resumo: 'Portal público com os projetos e notícias da Fábrica.',
+    descricao:
+      'Portal público com os projetos, as equipes e as notícias da Fábrica de Software.',
+    tecnologias: ['Vue'],
     membros: [
       { idUsuario: 8, funcao: 'Front-end' },
       { idUsuario: 5, funcao: 'Design' },
     ],
+    repositorio: 'https://github.com/fabricadesoftware-ifc/site-fabrica',
+    figma: 'https://figma.com/file/site-fabrica',
     progresso: 100,
   },
 ]
 
+
+export const galeria: ImagemGaleria[] = [
+  { id: 1, idProjeto: 1, arquivo: 'logo.png', tipo: 'LOGO' },
+  { id: 2, idProjeto: 1, arquivo: 'banner.jpg', tipo: 'BANNER' },
+  { id: 3, idProjeto: 1, arquivo: 'tela-inicial.png', tipo: 'TELA' },
+  { id: 4, idProjeto: 1, arquivo: 'boletim.png', tipo: 'TELA' },
+  { id: 5, idProjeto: 2, arquivo: 'logo.png', tipo: 'LOGO' },
+  { id: 6, idProjeto: 2, arquivo: 'atlas.png', tipo: 'TELA' },
+  { id: 7, idProjeto: 3, arquivo: 'logo.png', tipo: 'LOGO' },
+  { id: 8, idProjeto: 3, arquivo: 'dashboard.png', tipo: 'TELA' },
+  { id: 9, idProjeto: 4, arquivo: 'leitor.jpg', tipo: 'BANNER' },
+  { id: 10, idProjeto: 6, arquivo: 'pagina-inicial.png', tipo: 'TELA' },
+]

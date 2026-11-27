@@ -3,14 +3,73 @@ export type Papel = 'admin' | 'lider' | 'membro'
 /** Perfis do seletor de papel em desenvolvimento (cada um entra com uma conta diferente). */
 export type PerfilDev = Papel | 'nao-autorizado'
 
+export type TipoLink = 'GitHub' | 'LinkedIn' | 'Site'
+
+export interface LinkPerfil {
+  tipo: TipoLink
+  url: string
+}
+
 export interface Usuario {
   id: number
+  /** Nome curto (menu, mensagens, crachá da sidebar). */
   nome: string
+  /** Nome completo (vem do GitHub). */
+  nomeCompleto: string
+  /** Login do GitHub, sem o @. */
+  usuario: string
+  iniciais: string
   funcao: string
   isSuper: boolean
   online: boolean
   /** Cor do avatar (iniciais). */
   cor: string
+  /** Foto enviada pelo usuário (data URL); sem foto, usa as iniciais. */
+  foto: string | null
+  /** Ex.: "Informática · Técnico integrado". */
+  curso: string
+  ativo: boolean
+  /** Ex.: "Bolsista". */
+  vinculo: string
+  /** Entrada na Fábrica, ISO (só a data). */
+  desde: string
+  /** Número do crachá. */
+  registro: number
+  bio: string
+  links: LinkPerfil[]
+}
+
+/** Campos que o próprio membro edita em "Meu perfil" (nome e usuário vêm do GitHub). */
+export type DadosPerfil = Pick<Usuario, 'foto' | 'curso' | 'bio' | 'links'>
+
+/** Papel exibido no crachá da comunidade (cor da faixa). */
+export type PapelComunidade = 'lider' | 'membro' | 'orientador'
+
+export interface DesempenhoMembro {
+  concluidas: number
+  fazendo: number
+  emRevisao: number
+  /** % de tarefas aprovadas sem devolução. */
+  dePrimeira: number
+  devolvidas: number
+}
+
+export interface PullRequest {
+  repositorio: string
+  numero: number
+  titulo: string
+  /** ISO (só a data). */
+  data: string
+}
+
+export interface AtividadeGithub {
+  commits: number
+  pullRequests: number
+  /** ISO (só a data). */
+  ultimaAtividade: string
+  /** Últimos 6 meses, do mais antigo ao atual. */
+  commitsPorMes: { mes: string; total: number }[]
+  prsRecentes: PullRequest[]
 }
 
 export type StatusProjeto = 'Em andamento' | 'Planejamento' | 'Pausado' | 'Concluído'
@@ -30,9 +89,24 @@ export interface Projeto {
   status: StatusProjeto
   idOrientador: number
   idLead: number
+  /** Frase curta do card. */
+  resumo: string
+  descricao: string
   tecnologias: string[]
   membros: MembroProjeto[]
   progresso: number
+  repositorio?: string
+  figma?: string
+}
+
+export type TipoArquivoGaleria = 'LOGO' | 'BANNER' | 'TELA'
+
+export interface ImagemGaleria {
+  id: number
+  idProjeto: number
+  /** Nome do arquivo (ex.: "logo.png"). */
+  arquivo: string
+  tipo: TipoArquivoGaleria
 }
 
 export type TamanhoTarefa = 'P' | 'M' | 'G'
@@ -106,11 +180,33 @@ export interface Atividade {
   haQuantoTempo: string
 }
 
+/** Período de algo (ISO, só a data). Sem `fim` = atual. */
+export interface Periodo {
+  inicio: string
+  fim?: string
+}
+
+export interface ProjetoEquipe extends Periodo {
+  idProjeto: number
+}
+
 export interface Equipe {
   id: number
   nome: string
+  cor: string
+  /** Criação da equipe, ISO (só a data). */
+  desde: string
+  /** Membros atuais (derivado de `Time_Membro`). */
   idsMembros: number[]
   idsProjetos: number[]
+  projetos: ProjetoEquipe[]
+}
+
+/** Tabela `Time_Membro`: entrada e saída de cada pessoa numa equipe. */
+export interface TimeMembro extends Periodo {
+  id: number
+  idEquipe: number
+  idUsuario: number
 }
 
 export interface Mensagem {

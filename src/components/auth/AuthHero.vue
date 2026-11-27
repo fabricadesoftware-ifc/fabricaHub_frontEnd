@@ -5,7 +5,7 @@ defineProps<{ texto: string }>()
 <template>
   <section class="hero">
     <p class="rotulo">&lt; FÁBRICA DE SOFTWARE /&gt;</p>
-    <h1 class="titulo">Fabrica<span class="hub">HUB</span><span class="hub cursor" aria-hidden="true">_</span></h1>
+    <h1 class="titulo">Fabrica<span class="hub">HUB</span></h1>
     <p class="subtitulo">Projetos, equipes e tarefas em <span class="destaque">um só lugar.</span></p>
     <p class="texto">{{ texto }}</p>
     <slot />

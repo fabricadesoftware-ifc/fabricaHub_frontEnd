@@ -22,6 +22,14 @@ export type NomeIcone =
   | 'voltar'
   | 'copiar'
   | 'alerta'
+  | 'github'
+  | 'linkedin'
+  | 'globo'
+  | 'cadeado'
+  | 'externo'
+  | 'mais'
+  | 'fechar'
+  | 'figma'
 
 withDefaults(defineProps<{ nome: NomeIcone; tamanho?: number }>(), { tamanho: 18 })
 
@@ -49,6 +57,16 @@ const caminhos: Record<NomeIcone, string> = {
   voltar: 'M19 12H5M11 6l-6 6 6 6',
   copiar: 'M9 9h11v11H9zM5 15H4V4h11v1',
   alerta: 'M12 3l9.5 17h-19zM12 10v4M12 17h.01',
+  github:
+    'M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21',
+  linkedin: 'M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2zM4 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4z',
+  globo: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18',
+  cadeado: 'M6 11h12v9H6zM8.5 11V8a3.5 3.5 0 0 1 7 0v3',
+  externo: 'M14 4h6v6M20 4l-9 9M18 14v6H4V6h6',
+  mais: 'M12 5v14M5 12h14',
+  fechar: 'M6 6l12 12M18 6L6 18',
+  figma:
+    'M9 3h3v6H9a3 3 0 0 1 0-6zM12 3h3a3 3 0 0 1 0 6h-3zM9 9h3v6H9a3 3 0 0 1 0-6zM15 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6zM9 15h3v3a3 3 0 1 1-3-3z',
 }
 </script>
 
