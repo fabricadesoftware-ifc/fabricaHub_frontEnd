@@ -40,6 +40,8 @@
   --papel-lider-claro: #FFA366;
   --papel-admin: #2A2AFF;
   --papel-admin-claro: #9AABFF;
+  --papel-orientador: #2A2AFF;
+  --papel-orientador-claro: #9AABFF;
 
   /* Status de tarefa (texto/borda sobre fundo escuro, contraste >= 4.5:1) */
   --status-afazer: rgba(255, 255, 255, .8);
