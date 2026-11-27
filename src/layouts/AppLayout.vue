@@ -1,5 +1,9 @@
 <script setup lang="ts">
 import BarraLateral from '@/components/global/BarraLateral.vue'
+import { useRole } from '@/composables/useRole'
+
+// Por enquanto só o membro tem telas; líder e admin veem apenas a sidebar.
+const { papel } = useRole()
 </script>
 
 <template>
@@ -7,7 +11,11 @@ import BarraLateral from '@/components/global/BarraLateral.vue'
     <a href="#conteudo" class="pular">Pular para o conteúdo</a>
     <BarraLateral class="barra" />
     <main id="conteudo" class="conteudo" tabindex="-1">
-      <RouterView />
+      <RouterView v-slot="{ Component, route }">
+        <Transition name="pagina" mode="out-in">
+          <component :is="Component" v-if="papel === 'membro'" :key="route.path" />
+        </Transition>
+      </RouterView>
     </main>
   </div>
 </template>

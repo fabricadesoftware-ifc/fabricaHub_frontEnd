@@ -16,7 +16,7 @@ withDefaults(
 <template>
   <div class="rotulo-secao" :class="[tamanho, tom]">
     <span class="rotulo"><slot name="rotulo">{{ rotulo }}</slot></span>
-    <component :is="nivel" class="titulo"><slot>{{ titulo }}</slot></component>
+    <component :is="nivel" v-if="titulo || $slots.default" class="titulo"><slot>{{ titulo }}</slot></component>
   </div>
 </template>
 

@@ -1,0 +1,19 @@
+import { tarefasEmMemoria } from '@/api/tarefas'
+import { eventos } from '@/mocks/agenda'
+import { respostaMock } from '@/utils/respostaMock'
+import type { EventoAgenda } from '@/utils/tipos'
+
+export const agendaApi = {
+  /**
+   * Eventos entre `inicio` e `fim` (ISO 'YYYY-MM-DD', inclusive),
+   * mais os prazos das tarefas abertas do usuário.
+   */
+  // Futuro: client.get<EventoAgenda[]>('/agenda', { params: { inicio, fim } })
+  listar(idUsuario: number, inicio: string, fim: string): Promise<EventoAgenda[]> {
+    const prazos: EventoAgenda[] = tarefasEmMemoria()
+      .filter((t) => t.idResponsavel === idUsuario && t.prazo && t.status !== 'Concluída')
+      .map((t) => ({ id: 1000 + t.id, titulo: t.titulo, data: t.prazo!, idProjeto: t.idProjeto, tipo: 'entrega' }))
+    const lista = [...eventos, ...prazos].filter((e) => e.data >= inicio && e.data <= fim)
+    return respostaMock(lista)
+  },
+}

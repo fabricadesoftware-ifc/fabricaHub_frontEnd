@@ -26,7 +26,7 @@ const { progresso, etapa, erro, tentarDeNovo } = useCarregamentoPainel()
             <span id="titulo-carregando">Preparando seu painel<span class="cursor" aria-hidden="true">_</span></span>
           </RotuloSecao>
           <span class="porcentagem">
-            <ContadorMecanico :numero="progresso" :digitos="3" tamanho="pequeno" />
+            <ContadorMecanico :numero="progresso" :digitos="3" tamanho="pequeno" :animar="false" />
             <span class="sinal" aria-hidden="true">%</span>
           </span>
         </div>

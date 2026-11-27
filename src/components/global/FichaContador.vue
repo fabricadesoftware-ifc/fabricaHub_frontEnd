@@ -63,4 +63,15 @@ withDefaults(defineProps<{ numero: number; label: string; descricao?: string; de
 .destaque .descricao {
   color: var(--text);
 }
+
+/* Hover: sobe um pouco e a sombra dura cresce */
+.ficha {
+  transition: transform var(--dur-media) var(--ease-saida), box-shadow var(--dur-media) var(--ease-saida),
+    border-color var(--dur-media);
+}
+
+.ficha:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--sombra-elevada);
+}
 </style>

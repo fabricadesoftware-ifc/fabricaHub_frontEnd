@@ -8,7 +8,7 @@ export const projetos: Projeto[] = [
     cor: '#FF6600',
     status: 'Em andamento',
     idOrientador: 4,
-    idLead: 1,
+    idLead: 2,
     tecnologias: ['Vue', 'Node.js', 'PostgreSQL'],
     membros: [
       { idUsuario: 1, funcao: 'Front-end' },
@@ -40,7 +40,7 @@ export const projetos: Projeto[] = [
     cor: '#2A2AFF',
     status: 'Planejamento',
     idOrientador: 3,
-    idLead: 1,
+    idLead: 7,
     tecnologias: ['Vue', 'Pinia', 'Axios', 'Laravel'],
     membros: [
       { idUsuario: 1, funcao: 'Front-end' },
@@ -96,8 +96,3 @@ export const projetos: Projeto[] = [
   },
 ]
 
-/**
- * Só para o seletor de papel em desenvolvimento: quem assume a liderança
- * dos projetos do Jota quando ele é simulado como membro comum.
- */
-export const liderancasAlternativas: Record<number, number> = { 1: 2, 3: 7 }

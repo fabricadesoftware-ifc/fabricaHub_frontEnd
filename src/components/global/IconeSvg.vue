@@ -16,6 +16,12 @@ export type NomeIcone =
   | 'permissoes'
   | 'sair'
   | 'busca'
+  | 'sino'
+  | 'relogio'
+  | 'info'
+  | 'voltar'
+  | 'copiar'
+  | 'alerta'
 
 withDefaults(defineProps<{ nome: NomeIcone; tamanho?: number }>(), { tamanho: 18 })
 
@@ -37,6 +43,12 @@ const caminhos: Record<NomeIcone, string> = {
   permissoes: 'M5 11h14v10H5zM8 11V7.5a4 4 0 0 1 8 0V11',
   sair: 'M14 4h5v16h-5M10 8l-4 4 4 4M6 12h10',
   busca: 'M10.5 17a6.5 6.5 0 1 0 0-13 6.5 6.5 0 0 0 0 13zM20 20l-4.8-4.8',
+  sino: 'M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 20.5a2 2 0 0 0 4 0',
+  relogio: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 7v5l3 2',
+  info: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 11v5M12 8h.01',
+  voltar: 'M19 12H5M11 6l-6 6 6 6',
+  copiar: 'M9 9h11v11H9zM5 15H4V4h11v1',
+  alerta: 'M12 3l9.5 17h-19zM12 10v4M12 17h.01',
 }
 </script>
 

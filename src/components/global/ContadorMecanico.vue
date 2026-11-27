@@ -9,8 +9,10 @@ const props = withDefaults(
     tamanho?: 'normal' | 'pequeno'
     /** `destaque` para usar sobre fundo laranja. */
     tom?: 'normal' | 'destaque'
+    /** Placa vira quando o dígito muda. Desligue para números que mudam muito rápido. */
+    animar?: boolean
   }>(),
-  { digitos: 2, tamanho: 'normal', tom: 'normal' },
+  { digitos: 2, tamanho: 'normal', tom: 'normal', animar: true },
 )
 
 const lista = computed(() =>
@@ -19,9 +21,16 @@ const lista = computed(() =>
 </script>
 
 <template>
-  <span class="contador" :class="[tamanho, tom]">
+  <span class="contador" :class="[tamanho, tom, { animar }]">
     <span class="sr-only">{{ numero }}</span>
-    <span v-for="(digito, i) in lista" :key="i" class="plaquinha" aria-hidden="true">{{ digito }}</span>
+    <!-- A chave inclui o dígito: quando ele muda, a placa é recriada e "vira". -->
+    <span
+      v-for="(digito, i) in lista"
+      :key="animar ? `${i}-${digito}` : i"
+      class="plaquinha"
+      aria-hidden="true"
+      :style="{ '--ordem': i }"
+    >{{ digito }}</span>
   </span>
 </template>
 
@@ -29,6 +38,7 @@ const lista = computed(() =>
 .contador {
   display: inline-flex;
   gap: 4px;
+  perspective: 300px;
 }
 
 .plaquinha {
@@ -42,6 +52,20 @@ const lista = computed(() =>
   font-weight: 700;
   line-height: 1.2;
   color: var(--text);
+}
+
+/* Placa de contador mecânico virando de cima para baixo */
+.animar .plaquinha {
+  animation: virar var(--dur-lenta) var(--ease-saida) backwards;
+  animation-delay: calc(var(--ordem) * 70ms);
+  transform-origin: 50% 50%;
+}
+
+@keyframes virar {
+  from {
+    opacity: 0;
+    transform: rotateX(-90deg);
+  }
 }
 
 /* Linha preta atravessando o meio da plaquinha */

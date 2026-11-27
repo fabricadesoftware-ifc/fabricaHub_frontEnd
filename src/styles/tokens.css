@@ -40,4 +40,22 @@
   --papel-lider-claro: #FFA366;
   --papel-admin: #2A2AFF;
   --papel-admin-claro: #9AABFF;
+
+  /* Status de tarefa (texto/borda sobre fundo escuro, contraste >= 4.5:1) */
+  --status-afazer: rgba(255, 255, 255, .8);
+  --status-fazendo: #8C8CFF;
+  --status-revisao: #FF8533;
+  --status-concluida: #3FB950;
+
+  /* Movimento */
+  --dur-rapida: 120ms;
+  --dur-media: 220ms;
+  --dur-lenta: 420ms;
+  --ease-saida: cubic-bezier(.2, .8, .2, 1);   /* entra rápido e assenta */
+  --ease-mola: cubic-bezier(.34, 1.56, .64, 1); /* passa um pouco e volta */
+  --sombra-elevada: 0 5px 0 #000;               /* hover: sombra dura maior */
+
+  /* Superfícies temáticas do dashboard */
+  --surface-pasta: #221D18;  /* pastas de projeto (papel pardo escuro) */
+  --cortica: #3A2A1D;        /* mural das equipes */
 }

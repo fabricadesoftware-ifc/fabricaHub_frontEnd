@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import IconeSvg from '@/components/global/IconeSvg.vue'
+import { corTextoSobre } from '@/utils/cores'
 import type { Papel } from '@/utils/tipos'
 
 const props = defineProps<{
@@ -8,6 +9,8 @@ const props = defineProps<{
   funcao: string
   papel: Papel
   online?: boolean
+  /** Cor do avatar (a cor da pessoa). */
+  cor?: string
 }>()
 
 defineEmits<{ sair: [] }>()
@@ -23,7 +26,7 @@ const inicial = computed(() => props.nome.charAt(0).toUpperCase())
     <div class="cartao">
       <div class="faixa" aria-hidden="true"><span class="furo" /></div>
       <div class="corpo">
-        <span class="avatar" aria-hidden="true">
+        <span class="avatar" aria-hidden="true" :style="cor ? { background: cor, color: corTextoSobre(cor) } : undefined">
           {{ inicial }}
           <span v-if="online" class="online" />
         </span>

@@ -69,4 +69,16 @@ withDefaults(
 .recusado {
   --cor: #FF6B5E;
 }
+
+/* Carimbo "batendo" no papel ao aparecer */
+.carimbo {
+  animation: carimbar var(--dur-lenta) var(--ease-mola) backwards;
+}
+
+@keyframes carimbar {
+  from {
+    opacity: 0;
+    transform: rotate(-8deg) scale(1.6);
+  }
+}
 </style>

@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import Cracha from '@/components/global/Cracha.vue'
+import EsqueletoBarraLateral from '@/components/global/EsqueletoBarraLateral.vue'
 import ItemMenu from '@/components/global/ItemMenu.vue'
 import MarcaFabrica from '@/components/global/MarcaFabrica.vue'
 import PastaProjeto from '@/components/global/PastaProjeto.vue'
 import PortaEtiqueta from '@/components/global/PortaEtiqueta.vue'
+import ProximaEntrega from '@/components/global/ProximaEntrega.vue'
 import { useMenuLateral } from '@/composables/useMenuLateral'
 import { useRole } from '@/composables/useRole'
 import { useLogin } from '@/composables/useLogin'
@@ -12,14 +14,17 @@ import { useAuthStore } from '@/stores/auth'
 const auth = useAuthStore()
 const { trocarConta } = useLogin()
 const { papel } = useRole()
-const { secoes, pastas } = useMenuLateral()
+const { carregando, secoes, pastas, proximaEntrega } = useMenuLateral()
 </script>
 
 <template>
-  <aside class="barra-lateral">
+  <aside class="barra-lateral" :aria-busy="carregando">
     <MarcaFabrica />
 
-    <nav class="navegacao" aria-label="Menu principal">
+    <EsqueletoBarraLateral v-if="carregando" :papel="papel" />
+    <p v-if="carregando" class="sr-only" role="status">Carregando o menu…</p>
+
+    <nav v-else class="navegacao" aria-label="Menu principal">
       <section v-for="(secao, i) in secoes" :key="secao.etiqueta" class="secao" :aria-labelledby="`secao-${i}`">
         <PortaEtiqueta :id="`secao-${i}`" :texto="secao.etiqueta" />
         <ul class="itens">
@@ -37,14 +42,17 @@ const { secoes, pastas } = useMenuLateral()
           </li>
         </ul>
       </section>
+
+      <ProximaEntrega v-if="proximaEntrega && papel !== 'admin'" v-bind="proximaEntrega" />
     </nav>
 
     <Cracha
-      v-if="auth.usuario"
+      v-if="auth.usuario && !carregando"
       class="cracha"
       :nome="auth.usuario.nome"
       :funcao="auth.usuario.funcao"
       :online="auth.usuario.online"
+      :cor="auth.usuario.cor"
       :papel="papel"
       @sair="trocarConta"
     />

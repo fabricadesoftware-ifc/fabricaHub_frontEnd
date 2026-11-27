@@ -77,4 +77,8 @@ input::placeholder {
   font-size: 11px;
   color: var(--text-muted);
 }
+
+.campo-busca {
+  transition: border-color var(--dur-media);
+}
 </style>

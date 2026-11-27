@@ -3,56 +3,42 @@ import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
 import { useRole } from '@/composables/useRole'
-import { podeAcessar } from '@/utils/permissoes'
 import { useAuthStore } from '@/stores/auth'
 import { useProjetosStore } from '@/stores/projetos'
-import type { Papel } from '@/utils/tipos'
+import { podeAcessar } from '@/utils/permissoes'
+import type { PerfilDev } from '@/utils/tipos'
 
 // Só em desenvolvimento (App.vue não carrega este componente em produção).
-type Opcao = Papel | 'nao-autorizado'
-
+// Cada perfil entra com uma conta diferente: Jota, Daniel, Peraza ou @igor.dev.
 const auth = useAuthStore()
 const projetos = useProjetosStore()
-const { entrar, garantirCarregado, simularPapel, simularNaoAutorizado } = useAuth()
+const { trocarPerfil } = useAuth()
 const { papel } = useRole()
 const rota = useRoute()
 const router = useRouter()
 const trocando = ref(false)
 
-const opcoes: { valor: Opcao; rotulo: string }[] = [
-  { valor: 'membro', rotulo: 'Membro' },
-  { valor: 'lider', rotulo: 'Líder' },
-  { valor: 'admin', rotulo: 'Admin' },
-  { valor: 'nao-autorizado', rotulo: 'Não autorizado' },
+const opcoes: { valor: PerfilDev; rotulo: string; conta: string }[] = [
+  { valor: 'membro', rotulo: 'Membro', conta: 'Jota' },
+  { valor: 'lider', rotulo: 'Líder', conta: 'Daniel' },
+  { valor: 'admin', rotulo: 'Admin', conta: 'Peraza' },
+  { valor: 'nao-autorizado', rotulo: 'Não autorizado', conta: '@igor.dev' },
 ]
 
-const ativo = computed<Opcao | null>(() => {
-  if (auth.naoAutorizadoSimulado) return 'nao-autorizado'
-  return auth.usuario ? papel.value : auth.papelSimulado
+const ativo = computed<PerfilDev>(() => {
+  if (!auth.logado) return auth.perfilSimulado ?? 'membro'
+  return auth.autorizado ? papel.value : 'nao-autorizado'
 })
 
-async function trocar(novo: Opcao) {
+async function trocar(novo: PerfilDev) {
   if (novo === ativo.value || trocando.value) return
   trocando.value = true
   try {
-    // Fora do login, só guarda a preferência para o próximo "Entrar com GitHub".
-    if (novo === 'nao-autorizado') {
-      simularNaoAutorizado(true)
-      if (auth.logado) {
-        await entrar()
-        await router.replace({ name: 'acesso-negado' })
-      }
-      return
-    }
-
-    const estavaSemAcesso = auth.naoAutorizadoSimulado
-    simularNaoAutorizado(false)
-    if (auth.logado && estavaSemAcesso) await entrar()
-    await garantirCarregado()
-    await simularPapel(novo)
+    await trocarPerfil(novo)
     if (!auth.logado) return
-
-    if (estavaSemAcesso && rota.name === 'acesso-negado') {
+    if (novo === 'nao-autorizado') {
+      await router.replace({ name: 'acesso-negado' })
+    } else if (rota.name === 'acesso-negado') {
       await router.replace({ name: 'dashboard' })
     } else if (!rota.meta.publica && !podeAcessar(rota, auth.usuario, projetos.lista)) {
       // O guard não roda de novo na mesma rota: confere a permissão aqui.
@@ -75,6 +61,7 @@ async function trocar(novo: Opcao) {
         class="opcao"
         :class="[`papel-${opcao.valor}`, { ativa: ativo === opcao.valor }]"
         :aria-pressed="ativo === opcao.valor"
+        :title="`Entrar como ${opcao.conta}`"
         :disabled="trocando"
         @click="trocar(opcao.valor)"
       >

@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { Prioridade, StatusProjeto } from '@/utils/tipos'
+import type { Prioridade, StatusProjeto, StatusTarefa } from '@/utils/tipos'
 
 const props = defineProps<{
   /** Status/prioridade conhecidos ganham cor automática; outro texto usa `cor`. */
-  status: StatusProjeto | Prioridade | (string & {})
+  status: StatusProjeto | StatusTarefa | Prioridade | (string & {})
   /** Sobrescreve a cor (borda e texto). */
   cor?: string
 }>()
@@ -17,6 +17,10 @@ const cores: Record<string, string> = {
   Alta: '#FF6B5E',
   Média: '#F2B13A',
   Baixa: '#3FC6C6',
+  'A fazer': 'var(--status-afazer)',
+  Fazendo: 'var(--status-fazendo)',
+  'Em revisão': 'var(--status-revisao)',
+  Concluída: 'var(--status-concluida)',
 }
 
 const corFinal = computed(() => props.cor ?? cores[props.status] ?? 'var(--text-muted)')
