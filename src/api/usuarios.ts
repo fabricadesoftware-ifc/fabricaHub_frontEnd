@@ -11,13 +11,13 @@ function buscarPorId(id: number): Usuario {
   return usuario
 }
 
-export const usuarioRepository = {
-  // Futuro: http.get<Usuario>('/me')
-  obterLogado(): Promise<Usuario> {
-    return respostaMock(buscarPorId(ID_USUARIO_LOGADO))
+export const usuariosApi = {
+  // Futuro: client.get<Usuario>(`/usuarios/${id}`)
+  obterPorId(id: number = ID_USUARIO_LOGADO): Promise<Usuario> {
+    return respostaMock(buscarPorId(id))
   },
 
-  // Futuro: http.get<Usuario[]>('/usuarios')
+  // Futuro: client.get<Usuario[]>('/usuarios')
   listar(): Promise<Usuario[]> {
     return respostaMock(usuarios)
   },

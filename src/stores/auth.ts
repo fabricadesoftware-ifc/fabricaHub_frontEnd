@@ -1,36 +1,97 @@
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
-import { authController } from '@/controllers/authController'
-import { useProjetosStore } from '@/stores/projetos'
-import type { Papel, Usuario } from '@/utils/tipos'
+import { lerJson, remover, salvarJson } from '@/utils/armazenamento'
+import type { ContaGitHub, GithubUser, Papel, Usuario } from '@/utils/tipos'
 
+const CHAVE_SESSAO = 'fabricahub:sessao'
+const CHAVE_DEV = 'fabricahub:dev'
+
+interface Sessao {
+  githubUser: GithubUser
+  autorizado: boolean
+  idUsuario: number | null
+}
+
+/** Preferências do seletor de papel (só em desenvolvimento). */
+interface PreferenciasDev {
+  papel: Papel | null
+  naoAutorizado: boolean
+}
+
+/**
+ * Estado compartilhado da sessão: conta GitHub, usuário logado e papel simulado.
+ * Só guarda e persiste estado; as chamadas à camada `api` ficam em `useAuth`.
+ */
 export const useAuthStore = defineStore('auth', () => {
+  const sessaoSalva = lerJson<Sessao>(CHAVE_SESSAO)
+  const devSalvo = import.meta.env.DEV ? lerJson<PreferenciasDev>(CHAVE_DEV) : null
+
+  const githubUser = ref<GithubUser | null>(sessaoSalva?.githubUser ?? null)
+  const autorizado = ref(sessaoSalva?.autorizado ?? false)
+  const idUsuario = ref<number | null>(sessaoSalva?.idUsuario ?? null)
+  /** Usuário do sistema (só existe quando a conta GitHub é autorizada). */
   const usuario = ref<Usuario | null>(null)
-  let carregamento: Promise<void> | null = null
 
-  /** Carrega usuário e projetos uma única vez (o guard depende dos dois). */
-  function garantirCarregado(): Promise<void> {
-    carregamento ??= (async () => {
-      const projetos = useProjetosStore()
-      const [u] = await Promise.all([authController.obterUsuarioLogado(), projetos.carregar()])
-      usuario.value = u
-      // Só em desenvolvimento: abrir com ?papel=membro|lider|admin já simula o papel
-      // (roda antes do guard, então dá para testar rotas protegidas por link).
-      const papelInicial = new URLSearchParams(window.location.search).get('papel')
-      if (import.meta.env.DEV && (papelInicial === 'membro' || papelInicial === 'lider' || papelInicial === 'admin')) {
-        await simularPapel(papelInicial)
-      }
-    })()
-    return carregamento
+  const papelSimulado = ref<Papel | null>(devSalvo?.papel ?? null)
+  const naoAutorizadoSimulado = ref(devSalvo?.naoAutorizado ?? false)
+
+  const logado = computed(() => githubUser.value !== null)
+
+  function salvarSessao() {
+    if (!githubUser.value) return remover(CHAVE_SESSAO)
+    salvarJson(CHAVE_SESSAO, {
+      githubUser: githubUser.value,
+      autorizado: autorizado.value,
+      idUsuario: idUsuario.value,
+    } satisfies Sessao)
   }
 
-  /** Só em desenvolvimento (seletor de papel). */
-  async function simularPapel(papel: Papel) {
-    if (!usuario.value) return
-    const resultado = await authController.simularPapel(usuario.value.id, papel)
-    usuario.value = resultado.usuario
-    useProjetosStore().substituir(resultado.projetos)
+  function salvarDev() {
+    salvarJson(CHAVE_DEV, { papel: papelSimulado.value, naoAutorizado: naoAutorizadoSimulado.value } satisfies PreferenciasDev)
   }
 
-  return { usuario, garantirCarregado, simularPapel }
+  function iniciarSessao(conta: ContaGitHub) {
+    githubUser.value = { login: conta.login, nome: conta.nome, iniciais: conta.iniciais }
+    idUsuario.value = conta.idUsuario
+    autorizado.value = conta.idUsuario !== null
+    usuario.value = null
+    salvarSessao()
+  }
+
+  function encerrarSessao() {
+    githubUser.value = null
+    autorizado.value = false
+    idUsuario.value = null
+    usuario.value = null
+    salvarSessao()
+  }
+
+  function definirUsuario(novo: Usuario | null) {
+    usuario.value = novo
+  }
+
+  function definirPapelSimulado(papel: Papel | null) {
+    papelSimulado.value = papel
+    salvarDev()
+  }
+
+  function definirNaoAutorizadoSimulado(ativo: boolean) {
+    naoAutorizadoSimulado.value = ativo
+    salvarDev()
+  }
+
+  return {
+    githubUser,
+    autorizado,
+    idUsuario,
+    usuario,
+    logado,
+    papelSimulado,
+    naoAutorizadoSimulado,
+    iniciarSessao,
+    encerrarSessao,
+    definirUsuario,
+    definirPapelSimulado,
+    definirNaoAutorizadoSimulado,
+  }
 })

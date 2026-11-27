@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 import AppLayout from '@/layouts/AppLayout.vue'
-import { podeAcessar } from '@/services/permissoes'
+import { useAuth } from '@/composables/useAuth'
+import { podeAcessar } from '@/utils/permissoes'
 import { useAuthStore } from '@/stores/auth'
 import { useProjetosStore } from '@/stores/projetos'
 import type { Papel } from '@/utils/tipos'
@@ -12,6 +13,8 @@ declare module 'vue-router' {
     /** Exige liderar o projeto de `:id` (admin passa direto). */
     liderDoProjeto?: boolean
     publica?: boolean
+    /** Exige sessão autorizada, mas a própria página faz a carga dos dados (tela de carregamento). */
+    carregaDados?: boolean
   }
 }
 
@@ -36,6 +39,12 @@ const routes: RouteRecordRaw[] = [
   // Públicas
   { path: '/login', name: 'login', component: () => import('@/pages/auth/LoginPage.vue'), meta: { publica: true } },
   { path: '/redirecionando', name: 'redirecionando', component: () => import('@/pages/auth/RedirecionandoPage.vue'), meta: { publica: true } },
+  {
+    path: '/carregando',
+    name: 'carregando',
+    component: () => import('@/pages/auth/CarregandoPage.vue'),
+    meta: { carregaDados: true },
+  },
   { path: '/403', name: 'acesso-negado', component: () => import('@/pages/auth/AcessoNegadoPage.vue'), meta: { publica: true } },
 
   {
@@ -79,10 +88,20 @@ const router = createRouter({
   scrollBehavior: () => ({ top: 0 }),
 })
 
+let atalhoDevAplicado = false
+
 router.beforeEach(async (to) => {
-  if (to.meta.publica) return true
   const auth = useAuthStore()
-  await auth.garantirCarregado()
+  const { aplicarAtalhoDev, garantirCarregado } = useAuth()
+  if (!atalhoDevAplicado) {
+    atalhoDevAplicado = true
+    await aplicarAtalhoDev()
+  }
+  if (to.meta.publica) return true
+  if (!auth.logado) return { name: 'login' }
+  if (!auth.autorizado) return { name: 'acesso-negado' }
+  if (to.meta.carregaDados) return true
+  await garantirCarregado()
   if (!podeAcessar(to, auth.usuario, useProjetosStore().lista)) return { name: 'acesso-negado' }
   return true
 })

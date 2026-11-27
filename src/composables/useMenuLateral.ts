@@ -1,8 +1,11 @@
-import { computed } from 'vue'
-import type { RouteLocationRaw } from 'vue-router'
+import { computed, onMounted } from 'vue'
+import { useRoute, useRouter, type RouteLocationRaw } from 'vue-router'
 import type { NomeIcone } from '@/components/global/IconeSvg.vue'
+import { useAcessos } from '@/composables/useAcessos'
+import { useMensagens } from '@/composables/useMensagens'
+import { useNoticias } from '@/composables/useNoticias'
 import { useRole } from '@/composables/useRole'
-import { useAtividadeStore } from '@/stores/atividade'
+import { useTarefas } from '@/composables/useTarefas'
 import { useAuthStore } from '@/stores/auth'
 import { useProjetosStore } from '@/stores/projetos'
 
@@ -15,6 +18,7 @@ export interface ItemMenu {
   atencao?: boolean
   /** Bolinha de novidade, sem número. */
   novidade?: boolean
+  ativo?: boolean
 }
 
 export interface SecaoMenu {
@@ -33,20 +37,26 @@ export interface PastaMenu {
 export function useMenuLateral() {
   const auth = useAuthStore()
   const projetos = useProjetosStore()
-  const atividade = useAtividadeStore()
+  const { tarefas, carregar: carregarTarefas } = useTarefas()
+  const { mensagens, carregar: carregarMensagens } = useMensagens()
+  const { noticias, carregar: carregarNoticias } = useNoticias()
+  const { solicitacoes, carregar: carregarSolicitacoes } = useAcessos()
+
+  // Contadores da sidebar: carrega tudo junto ao montar.
+  onMounted(() => Promise.all([carregarTarefas(), carregarMensagens(), carregarNoticias(), carregarSolicitacoes()]))
   const { papel, leadsProject } = useRole()
 
   const idUsuario = computed(() => auth.usuario?.id)
 
   const minhasTarefasAbertas = computed(() =>
-    atividade.tarefas.filter((t) => t.idResponsavel === idUsuario.value && t.status !== 'Concluída'),
+    tarefas.value.filter((t) => t.idResponsavel === idUsuario.value && t.status !== 'Concluída'),
   )
-  const naoLidas = computed(() => atividade.mensagens.filter((m) => !m.lida).length)
-  const temNoticiaNova = computed(() => atividade.noticias.some((n) => n.nova))
+  const naoLidas = computed(() => mensagens.value.filter((m) => !m.lida).length)
+  const temNoticiaNova = computed(() => noticias.value.some((n) => n.nova))
   const revisoesPendentes = computed(
-    () => atividade.tarefas.filter((t) => t.status === 'Em revisão' && leadsProject(t.idProjeto)).length,
+    () => tarefas.value.filter((t) => t.status === 'Em revisão' && leadsProject(t.idProjeto)).length,
   )
-  const acessosPendentes = computed(() => atividade.solicitacoes.filter((s) => s.pendente).length)
+  const acessosPendentes = computed(() => solicitacoes.value.filter((s) => s.pendente).length)
 
   /** Projetos em que o usuário é membro ou líder; os que ele lidera vêm primeiro. */
   const meusProjetos = computed(() => {
@@ -147,5 +157,37 @@ export function useMenuLateral() {
     })
   })
 
-  return { secoes, pastas, minhasTarefasAbertas, naoLidas, revisoesPendentes, acessosPendentes }
+  const router = useRouter()
+  const rota = useRoute()
+
+  /**
+   * Marca um único item ativo: o de caminho mais específico que bate com a rota atual
+   * (exato, mesma rota com outro parâmetro, ou sub-rota). Ex.: em /projetos/3/tarefas ganha
+   * "Tarefas do projeto" (mesmo que o link aponte para /projetos/1/tarefas), não "Projetos".
+   */
+  const secoesComAtivo = computed<SecaoMenu[]>(() => {
+    const atual = rota.path
+    let melhor: ItemMenu | null = null
+    let tamanho = -1
+    for (const secao of secoes.value) {
+      for (const item of secao.itens) {
+        const destino = router.resolve(item.para)
+        const caminho = destino.path
+        const mesmaRota = atual === caminho || (destino.name !== undefined && destino.name === rota.name)
+        const subRota = caminho !== '/' && atual.startsWith(`${caminho}/`)
+        // Rota exata/mesma rota sempre vence uma sub-rota; entre sub-rotas, vence a mais longa.
+        const peso = mesmaRota ? Number.MAX_SAFE_INTEGER : subRota ? caminho.length : -1
+        if (peso > tamanho) {
+          melhor = item
+          tamanho = peso
+        }
+      }
+    }
+    return secoes.value.map((secao) => ({
+      ...secao,
+      itens: secao.itens.map((item) => ({ ...item, ativo: item === melhor })),
+    }))
+  })
+
+  return { secoes: secoesComAtivo, pastas, minhasTarefasAbertas, naoLidas, revisoesPendentes, acessosPendentes }
 }

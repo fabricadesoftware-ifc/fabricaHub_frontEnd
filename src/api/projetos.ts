@@ -6,8 +6,8 @@ const projetos: Projeto[] = structuredClone(projetosMock)
 // Lideranças originais do mock, para poder devolvê-las ao simular "líder".
 const lideresOriginais = new Map(projetosMock.map((p) => [p.id, p.idLead]))
 
-export const projetoRepository = {
-  // Futuro: http.get<Projeto[]>('/projetos')
+export const projetosApi = {
+  // Futuro: client.get<Projeto[]>('/projetos')
   listar(): Promise<Projeto[]> {
     return respostaMock(projetos)
   },

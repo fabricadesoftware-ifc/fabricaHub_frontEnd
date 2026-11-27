@@ -6,9 +6,11 @@ import PastaProjeto from '@/components/global/PastaProjeto.vue'
 import PortaEtiqueta from '@/components/global/PortaEtiqueta.vue'
 import { useMenuLateral } from '@/composables/useMenuLateral'
 import { useRole } from '@/composables/useRole'
+import { useLogin } from '@/composables/useLogin'
 import { useAuthStore } from '@/stores/auth'
 
 const auth = useAuthStore()
+const { trocarConta } = useLogin()
 const { papel } = useRole()
 const { secoes, pastas } = useMenuLateral()
 </script>
@@ -42,9 +44,9 @@ const { secoes, pastas } = useMenuLateral()
       class="cracha"
       :nome="auth.usuario.nome"
       :funcao="auth.usuario.funcao"
-      :matricula="auth.usuario.matricula"
       :online="auth.usuario.online"
       :papel="papel"
+      @sair="trocarConta"
     />
   </aside>
 </template>

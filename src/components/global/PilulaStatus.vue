@@ -2,9 +2,14 @@
 import { computed } from 'vue'
 import type { Prioridade, StatusProjeto } from '@/utils/tipos'
 
-const props = defineProps<{ status: StatusProjeto | Prioridade }>()
+const props = defineProps<{
+  /** Status/prioridade conhecidos ganham cor automática; outro texto usa `cor`. */
+  status: StatusProjeto | Prioridade | (string & {})
+  /** Sobrescreve a cor (borda e texto). */
+  cor?: string
+}>()
 
-const cores: Record<StatusProjeto | Prioridade, string> = {
+const cores: Record<string, string> = {
   'Em andamento': '#3FB950',
   Planejamento: '#FF8533',
   Pausado: 'var(--text-muted)',
@@ -14,11 +19,11 @@ const cores: Record<StatusProjeto | Prioridade, string> = {
   Baixa: '#3FC6C6',
 }
 
-const cor = computed(() => cores[props.status] ?? 'var(--text-muted)')
+const corFinal = computed(() => props.cor ?? cores[props.status] ?? 'var(--text-muted)')
 </script>
 
 <template>
-  <span class="pilula" :style="{ '--cor': cor }">{{ status }}</span>
+  <span class="pilula" :style="{ '--cor': corFinal }">{{ status }}</span>
 </template>
 
 <style scoped>

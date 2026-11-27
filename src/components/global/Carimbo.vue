@@ -1,12 +1,17 @@
 <script setup lang="ts">
 withDefaults(
-  defineProps<{ texto: string; assinatura?: string; tipo?: 'aprovado' | 'devolvido' | 'recusado' }>(),
-  { assinatura: '', tipo: 'aprovado' },
+  defineProps<{
+    texto: string
+    assinatura?: string
+    tipo?: 'aprovado' | 'devolvido' | 'recusado'
+    tamanho?: 'normal' | 'pequeno'
+  }>(),
+  { assinatura: '', tipo: 'aprovado', tamanho: 'normal' },
 )
 </script>
 
 <template>
-  <div class="carimbo" :class="tipo">
+  <div class="carimbo" :class="[tipo, tamanho]">
     <span class="texto">{{ texto }}</span>
     <span v-if="assinatura" class="assinatura">{{ assinatura }}</span>
   </div>
@@ -37,6 +42,20 @@ withDefaults(
 .assinatura {
   font-size: 10px;
   font-weight: 700;
+}
+
+.pequeno {
+  padding: 3px 8px;
+  border-width: 3px;
+  border-radius: 6px;
+}
+
+.pequeno .texto {
+  font-size: 10px;
+}
+
+.pequeno .assinatura {
+  font-size: 8px;
 }
 
 .aprovado {

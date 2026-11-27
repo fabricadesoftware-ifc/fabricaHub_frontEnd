@@ -1,8 +1,5 @@
 <script setup lang="ts">
-// O logo é opcional enquanto o arquivo não estiver no repositório:
-// coloque-o em src/assets/logo-fabrica.png e ele aparece automaticamente.
-const logos = import.meta.glob<string>('@/assets/logo-fabrica.png', { eager: true, import: 'default' })
-const logo = Object.values(logos)[0]
+import { logoFabrica as logo } from '@/utils/logo'
 </script>
 
 <template>
