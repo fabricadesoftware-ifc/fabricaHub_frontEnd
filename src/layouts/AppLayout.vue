@@ -1,10 +1,5 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
 import BarraLateral from '@/components/global/BarraLateral.vue'
-import { useAtividadeStore } from '@/stores/atividade'
-
-const atividade = useAtividadeStore()
-onMounted(() => atividade.carregar())
 </script>
 
 <template>

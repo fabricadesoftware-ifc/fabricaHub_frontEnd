@@ -1,18 +1,17 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import { projetoController } from '@/controllers/projetoController'
 import type { Projeto } from '@/utils/tipos'
 
+/**
+ * Projetos carregados: estado compartilhado porque define o papel
+ * (líder = `idLead` de algum projeto). Quem carrega é `useProjetos`/`useAuth`.
+ */
 export const useProjetosStore = defineStore('projetos', () => {
   const lista = ref<Projeto[]>([])
-
-  async function carregar() {
-    lista.value = await projetoController.listar()
-  }
 
   function substituir(projetos: Projeto[]) {
     lista.value = projetos
   }
 
-  return { lista, carregar, substituir }
+  return { lista, substituir }
 })

@@ -1,7 +1,7 @@
 import { computed } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useProjetosStore } from '@/stores/projetos'
-import { lideraProjeto, papeisDoUsuario, papelPrincipal } from '@/services/permissoes'
+import { lideraProjeto, papeisDoUsuario, papelPrincipal } from '@/utils/permissoes'
 
 export function useRole() {
   const auth = useAuthStore()
