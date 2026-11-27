@@ -1,0 +1,103 @@
+import type { Projeto } from '@/utils/tipos'
+
+export const projetos: Projeto[] = [
+  {
+    id: 1,
+    nome: 'Painel de Integração',
+    sigla: 'P',
+    cor: '#FF6600',
+    status: 'Em andamento',
+    idOrientador: 4,
+    idLead: 1,
+    tecnologias: ['Vue', 'Node.js', 'PostgreSQL'],
+    membros: [
+      { idUsuario: 1, funcao: 'Front-end' },
+      { idUsuario: 2, funcao: 'Back-end' },
+      { idUsuario: 5, funcao: 'Design' },
+    ],
+    progresso: 68,
+  },
+  {
+    id: 2,
+    nome: 'Histologia',
+    sigla: 'H',
+    cor: '#12B0AE',
+    status: 'Em andamento',
+    idOrientador: 4,
+    idLead: 2,
+    tecnologias: ['Vue', 'Django'],
+    membros: [
+      { idUsuario: 2, funcao: 'Back-end' },
+      { idUsuario: 1, funcao: 'Front-end' },
+      { idUsuario: 6, funcao: 'Mobile' },
+    ],
+    progresso: 42,
+  },
+  {
+    id: 3,
+    nome: 'FabricaHUB',
+    sigla: 'F',
+    cor: '#2A2AFF',
+    status: 'Planejamento',
+    idOrientador: 3,
+    idLead: 1,
+    tecnologias: ['Vue', 'Pinia', 'Axios', 'Laravel'],
+    membros: [
+      { idUsuario: 1, funcao: 'Front-end' },
+      { idUsuario: 7, funcao: 'Back-end' },
+      { idUsuario: 8, funcao: 'DevOps' },
+    ],
+    progresso: 15,
+  },
+  {
+    id: 4,
+    nome: 'Catraca',
+    sigla: 'C',
+    cor: '#FF2020',
+    status: 'Pausado',
+    idOrientador: 4,
+    idLead: 6,
+    tecnologias: ['Python', 'Raspberry Pi'],
+    membros: [
+      { idUsuario: 6, funcao: 'Embarcados' },
+      { idUsuario: 5, funcao: 'Design' },
+    ],
+    progresso: 30,
+  },
+  {
+    id: 5,
+    nome: 'Águas',
+    sigla: 'A',
+    cor: '#12B0AE',
+    status: 'Em andamento',
+    idOrientador: 3,
+    idLead: 7,
+    tecnologias: ['React Native', 'Firebase'],
+    membros: [
+      { idUsuario: 7, funcao: 'Mobile' },
+      { idUsuario: 8, funcao: 'Back-end' },
+    ],
+    progresso: 55,
+  },
+  {
+    id: 6,
+    nome: 'Site da Fábrica',
+    sigla: 'S',
+    cor: '#FF8533',
+    status: 'Concluído',
+    idOrientador: 4,
+    idLead: 8,
+    tecnologias: ['Astro', 'CSS'],
+    membros: [
+      { idUsuario: 8, funcao: 'Front-end' },
+      { idUsuario: 5, funcao: 'Design' },
+    ],
+    progresso: 100,
+  },
+]
+
+/**
+ * Só para o seletor de papel em desenvolvimento: quem assume a liderança
+ * dos projetos do Jota quando ele é simulado como membro comum.
+ */
+export const liderancasAlternativas: Record<number, number> = { 1: 2, 3: 7 }
