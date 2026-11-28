@@ -9,5 +9,5 @@ const SeletorPapel = import.meta.env.DEV
 
 <template>
   <RouterView />
-  <component :is="SeletorPapel" v-if="SeletorPapel" />
+  <component :is="SeletorPapel" v-if="SeletorPapel && $route.name === 'login'" />
 </template>
