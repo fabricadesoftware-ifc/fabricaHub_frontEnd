@@ -18,15 +18,14 @@ declare module 'vue-router' {
   }
 }
 
-// Cadastros de sistema ficam nas rotas reservadas para a próxima etapa.
-const PaginaVazia = () => import('@/pages/PaginaVazia.vue')
+
 
 const LIDER: Papel[] = ['lider', 'admin']
 const ADMIN: Papel[] = ['admin']
 
 const rotasAdmin: RouteRecordRaw[] = [
   { path: '', name: 'admin-dashboard', component: () => import('@/pages/admin/PainelAdmin.vue') },
-  { path: 'acessos', name: 'admin-acessos', component: () => import('@/pages/admin/PainelAdmin.vue'), props: { secao: 'acessos' } },
+  { path: 'acessos', name: 'admin-acessos', component: () => import('@/pages/admin/AcessosAdmin.vue') },
   { path: 'membros', name: 'admin-membros', component: () => import('@/pages/members/MembrosPage.vue'), props: { gestao: true } },
   { path: 'membros/:id/editar', name: 'admin-membros-editar', component: () => import('@/pages/admin/MembroAdmin.vue') },
   { path: 'projetos', name: 'admin-projetos', component: () => import('@/pages/projects/ProjetosPage.vue'), props: { gestao: true } },
@@ -39,11 +38,11 @@ const rotasAdmin: RouteRecordRaw[] = [
   { path: 'noticias', name: 'admin-noticias', component: () => import('@/pages/news/NoticiasPage.vue'), props: { gestao: true } },
   { path: 'noticias/nova', name: 'admin-noticias-criar', component: () => import('@/pages/admin/NoticiaAdmin.vue') },
   { path: 'noticias/:id/editar', name: 'admin-noticias-editar', component: () => import('@/pages/admin/NoticiaAdmin.vue') },
-  { path: 'cadastros', name: 'admin-cadastros', component: PaginaVazia },
-  { path: 'tags', name: 'admin-tags', component: PaginaVazia },
-  { path: 'logs', name: 'admin-logs', component: () => import('@/pages/admin/PainelAdmin.vue'), props: { secao: 'logs' } },
-  { path: 'arquivos', name: 'admin-arquivos', component: PaginaVazia },
-  { path: 'permissoes', name: 'admin-permissoes', component: PaginaVazia },
+  { path: 'cadastros', name: 'admin-cadastros', component: () => import('@/pages/admin/CadastrosAdmin.vue') },
+  { path: 'tags', name: 'admin-tags', component: () => import('@/pages/admin/TagsAdmin.vue') },
+  { path: 'logs', name: 'admin-logs', component: () => import('@/pages/admin/LogsAdmin.vue') },
+  { path: 'arquivos', name: 'admin-arquivos', component: () => import('@/pages/admin/ArquivosAdmin.vue') },
+  { path: 'permissoes', name: 'admin-permissoes', component: () => import('@/pages/admin/PermissoesAdmin.vue') },
 ]
 
 const routes: RouteRecordRaw[] = [
