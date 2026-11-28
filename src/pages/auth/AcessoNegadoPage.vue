@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { resgatarTag } from '@/api/tagsAcesso'
 import AuthHero from '@/components/auth/AuthHero.vue'
 import Cracha from '@/components/auth/Cracha.vue'
 import BotaoBase from '@/components/global/BotaoBase.vue'
@@ -16,6 +17,17 @@ const auth = useAuthStore()
 const router = useRouter()
 const { trocarConta } = useLogin()
 const { pedindo, pedidoEnviado, erroPedido, pedirAcesso } = useAcessos()
+
+const codigo = ref('')
+const mensagemTag = ref('')
+async function usarTag() {
+  if (!auth.githubUser || auth.autorizado) return
+  try {
+    const idUsuario = resgatarTag(codigo.value, auth.githubUser)
+    auth.iniciarSessao({ ...auth.githubUser, idUsuario })
+    await router.replace({ name: 'dashboard' })
+  } catch (e) { mensagemTag.value = e instanceof Error ? e.message : 'Falha ao usar a tag.' }
+}
 
 const githubUser = computed(() => auth.githubUser)
 
@@ -61,6 +73,11 @@ function voltar() {
           <button type="button" class="link" @click="trocarConta">Trocar conta</button>
         </div>
 
+        <form v-if="githubUser && !auth.autorizado" class="resgate" @submit.prevent="usarTag">
+          <label>Tag de acesso <input v-model.trim="codigo" placeholder="Código da tag" required /></label>
+          <BotaoBase variante="secundario" tipo="submit">Usar tag</BotaoBase>
+          <p v-if="mensagemTag" class="erro" role="alert">{{ mensagemTag }}</p>
+        </form>
         <div role="status" class="status">
           <p v-if="pedidoEnviado" class="confirmacao">✓ Pedido enviado. Avisaremos quando for aprovado.</p>
           <p v-else-if="erroPedido" class="erro">{{ erroPedido }}</p>
@@ -78,6 +95,9 @@ function voltar() {
 </template>
 
 <style scoped>
+.resgate { display:flex; flex-wrap:wrap; align-items:end; gap:10px; }
+.resgate label { display:grid; gap:5px; }
+.resgate input { padding:10px; color:var(--text); background:var(--ink); border:1px solid var(--border); border-radius:6px; }
 .lado {
   display: flex;
   flex-direction: column;

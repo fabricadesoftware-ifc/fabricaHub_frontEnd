@@ -1,0 +1,317 @@
+.sistema {
+  display: grid;
+  gap: 22px;
+  align-content: start;
+  min-width: 0;
+  color: var(--text);
+}
+.sistema > header,
+.ticket header,
+.drop,
+.sistema footer,
+.faixa,
+.abas,
+.entrada,
+.acoes-sis {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.sistema > header,
+.ticket header {
+  justify-content: space-between;
+}
+.sistema h1 {
+  font-size: clamp(26px, 3vw, 36px);
+  letter-spacing: -0.04em;
+  line-height: 1.15;
+  margin-top: 6px;
+}
+.sistema h1 span,
+.sistema .indice {
+  color: var(--accent);
+}
+.sistema h2 {
+  font-size: 18px;
+}
+.sistema h3 {
+  font-size: 15px;
+}
+.sistema small,
+.sistema th,
+.sistema dt,
+.indice,
+.selo {
+  font: 600 10px/1.5 var(--font-mono);
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+.sistema small,
+.sistema dt,
+.sistema th {
+  color: var(--text-muted);
+}
+.sistema small {
+  display: block;
+}
+.sistema small b {
+  float: right;
+}
+.sistema p {
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+.sistema .nota {
+  margin-top: 14px;
+  font-size: 12px;
+}
+.sistema button,
+.sistema input {
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 8px 13px;
+  color: var(--text);
+  font: 600 12px var(--font-ui);
+}
+.sistema button {
+  background: var(--surface);
+  cursor: pointer;
+  min-height: 36px;
+}
+.sistema button:not(:disabled):hover {
+  border-color: var(--accent);
+}
+.sistema button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.sistema button[aria-pressed='true'] {
+  background: #efece7;
+  color: #161619;
+}
+.sistema button.principal {
+  background: var(--brand-orange);
+  color: #211307;
+  box-shadow: var(--shadow-hard);
+}
+.sistema input {
+  min-width: 0;
+  background: var(--ink);
+  min-height: 40px;
+  font-weight: 400;
+  color-scheme: dark;
+}
+.sistema .perigo,
+.sistema .falha td:last-child {
+  color: #ff847a;
+}
+.sistema .ok {
+  color: #62d87c;
+}
+.painel-sis,
+.ticket,
+.sistema dialog {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: clamp(14px, 2vw, 22px);
+  box-shadow: var(--shadow-hard);
+  min-width: 0;
+}
+.sistema .rolar {
+  overflow-x: auto;
+}
+.sistema table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  font-size: 13px;
+}
+.sistema th,
+.sistema td {
+  text-align: left;
+  padding: 12px 9px;
+  border-bottom: 1px dashed var(--border);
+}
+.sistema th {
+  border-bottom-style: solid;
+}
+.sistema td small {
+  margin-top: 3px;
+}
+.sistema .acoes-sis {
+  flex-wrap: nowrap;
+}
+.sistema .entrada {
+  margin: 16px 0;
+  padding: 12px;
+  background: var(--surface-2);
+  border-radius: 8px;
+}
+.entrada input {
+  flex: 1 1 160px;
+}
+.sistema .pastas {
+  gap: 4px;
+}
+.sistema .pastas button {
+  border-radius: 8px 8px 0 0;
+}
+.sistema .pastas button[aria-pressed='true'] {
+  background: var(--surface-2);
+  border-top: 2px solid var(--brand-orange);
+  color: var(--text);
+}
+.abas b {
+  font: 11px var(--font-mono);
+  margin-left: 4px;
+}
+.solicitacao {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+  background: var(--surface-2);
+  padding: 16px;
+  border-top: 2px dashed var(--border);
+  border-radius: 6px;
+}
+.tags-grid,
+.resumo-papeis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(225px, 100%), 1fr));
+  gap: 16px;
+}
+.ticket {
+  position: relative;
+  padding-left: 34px;
+  background: var(--surface-2);
+}
+.ticket::before {
+  content: '';
+  position: absolute;
+  left: 9px;
+  top: 48%;
+  height: 10px;
+  width: 10px;
+  background: var(--ink);
+  border: 1px solid #555;
+  border-radius: 50%;
+}
+.ticket.inativa {
+  background: var(--surface);
+}
+.ticket h3,
+.fita td {
+  font-family: var(--font-mono);
+}
+.ticket dl {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin: 15px 0;
+}
+.ticket dd {
+  margin: 0;
+  font-size: 13px;
+}
+.sistema progress {
+  width: 100%;
+  height: 7px;
+  margin: 7px 0 12px;
+  accent-color: var(--brand-orange);
+}
+.sistema footer {
+  border-top: 1px dashed var(--border);
+  padding-top: 12px;
+}
+.ticket footer button {
+  flex: 1;
+}
+.selo {
+  border: 1px solid currentColor;
+  padding: 2px 7px;
+  border-radius: 5px;
+  color: var(--text-muted);
+}
+.sistema dialog {
+  color: var(--text);
+  width: min(400px, 92vw);
+  margin: auto;
+}
+.sistema dialog::backdrop {
+  background: #000b;
+}
+.sistema dialog form,
+.sistema dialog label,
+.filtros-log {
+  display: grid;
+  gap: 10px;
+}
+.sistema dialog label {
+  gap: 4px;
+  font-size: 13px;
+}
+.faixa input {
+  margin-left: auto;
+}
+.fita {
+  border-top: 9px dotted var(--surface-2);
+}
+.fita td {
+  font-size: 12px;
+}
+.falha {
+  background: #281b1c;
+}
+.envio-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 16px;
+}
+.drop {
+  padding: 18px;
+  border: 2px dashed var(--border);
+  border-radius: 12px;
+}
+.drop button {
+  margin-left: auto;
+}
+.icone-envio {
+  color: var(--accent);
+  font-size: 26px;
+  padding: 6px 14px;
+  border-radius: 8px;
+  background: var(--surface-2);
+}
+.matriz td:not(:first-child),
+.matriz th:not(:first-child) {
+  text-align: center;
+}
+.resumo-papeis strong {
+  font: 700 15px var(--font-ui);
+  text-transform: none;
+  color: var(--text);
+}
+.resumo-papeis strong::before {
+  content: '■';
+  color: var(--brand-teal);
+  margin-right: 8px;
+}
+.resumo-papeis section:nth-child(2) strong::before {
+  color: var(--accent);
+}
+.resumo-papeis section:nth-child(3) strong::before {
+  color: #8787ff;
+}
+@media (max-width: 900px) {
+  .envio-grid {
+    grid-template-columns: 1fr;
+  }
+  .faixa input {
+    margin-left: 0;
+  }
+}

@@ -6,7 +6,7 @@ import type { DadosProjeto, Projeto } from '@/utils/tipos'
 
 export const MAX_DESCRICAO = 400
 /** Tecnologias comuns na Fábrica (as do projeto entram mesmo se não estiverem aqui). */
-const TECNOLOGIAS_COMUNS = ['Vue', 'React', 'Django REST', 'Node', 'PostgreSQL', 'MySQL', 'Docker', 'Figma', 'Python', 'ESP32']
+import { catalogo } from '@/api/cadastros'
 
 function copiar(p: Projeto): DadosProjeto {
   return {
@@ -39,7 +39,7 @@ export function useEditarProjeto(idProjeto: Ref<number>) {
   }
 
   const alterado = computed(() => !!projeto.value && JSON.stringify(form) !== JSON.stringify(copiar(projeto.value)))
-  const tecnologias = computed(() => [...new Set([...TECNOLOGIAS_COMUNS, ...(projeto.value?.tecnologias ?? [])])])
+  const tecnologias = computed(() => [...new Set([...catalogo.Tecnologias, ...(projeto.value?.tecnologias ?? [])])])
   const erroNome = computed(() => (form.nome.trim() ? '' : 'O projeto precisa de um nome.'))
 
   function alternarTecnologia(nome: string) {

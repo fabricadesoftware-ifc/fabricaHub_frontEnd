@@ -100,6 +100,7 @@ const doisDigitos = (n: number) => String(n).padStart(2, '0')
             :foto="usuario.foto"
             :online="usuario.online"
           >
+            <p v-if="usuario.area" class="vinculo">Área · {{ usuario.area }}</p>
             <p class="vinculo">{{ usuario.vinculo }} na Fábrica desde {{ mesAno(usuario.desde).toLowerCase() }}</p>
             <ul v-if="usuario.links.length" class="links">
               <li v-for="link in usuario.links" :key="link.url">

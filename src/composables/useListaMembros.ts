@@ -29,7 +29,7 @@ export function useListaMembros(gestao = false) {
   )
 
   const cursos = computed(() => [...new Set(itens.value.map((i) => nomeCurso(i.usuario.curso)))].sort())
-  const areas = computed(() => [...new Set(itens.value.map((i) => i.usuario.funcao))].sort())
+  const areas = computed(() => [...new Set(itens.value.map((i) => i.usuario.area ?? i.usuario.funcao))].sort())
 
   const filtrados = computed(() => {
     const termo = busca.value.trim().toLowerCase().replace(/^@/, '')
@@ -38,7 +38,7 @@ export function useListaMembros(gestao = false) {
         (!papelGestao.value || papel === papelGestao.value) &&
         (status.value === 'todos' || usuario.ativo === (status.value === 'ativos')) &&
         (!curso.value || nomeCurso(usuario.curso) === curso.value) &&
-        (!area.value || usuario.funcao === area.value) &&
+        (!area.value || (usuario.area ?? usuario.funcao) === area.value) &&
         (!termo || `${usuario.nome} ${usuario.nomeCompleto} ${usuario.usuario} ${gestao ? [papel, usuario.funcao, ...(usuario.tags ?? [])].join(' ') : ''}`.toLowerCase().includes(termo)),
     )
   })

@@ -3,7 +3,26 @@ import { desempenhos, ID_USUARIO_LOGADO, usuarios as usuariosMock } from '@/mock
 import { respostaMock } from '@/utils/respostaMock'
 import type { AtividadeGithub, DadosPerfil, DesempenhoMembro, Usuario } from '@/utils/tipos'
 
-const usuarios: Usuario[] = structuredClone(usuariosMock)
+import { lerJson, salvarJson } from '@/utils/armazenamento'
+import { isoDia } from '@/utils/datas'
+import type { GithubUser } from '@/utils/tipos'
+
+const chave = 'fabricahub:usuarios'
+export const usuarios: Usuario[] = lerJson(chave) ?? structuredClone(usuariosMock)
+export function salvarUsuarios() { salvarJson(chave, usuarios) }
+export function autorizarConta(conta: GithubUser) {
+  let usuario = usuarios.find(u => u.usuario === conta.login)
+  if (!usuario) {
+    const id = Math.max(0, ...usuarios.map(u => u.id)) + 1
+    usuario = { id, registro: Math.max(0, ...usuarios.map(u => u.registro)) + 1, nome: conta.nome, nomeCompleto: conta.nome,
+      usuario: conta.login, iniciais: conta.iniciais, funcao: 'Membro', isSuper: false, online: false, cor: '#12B0AE',
+      foto: null, curso: '', ativo: true, vinculo: 'Membro', desde: isoDia(new Date()), bio: '', links: [] }
+    usuarios.push(usuario)
+  }
+  usuario.ativo = true
+  salvarUsuarios()
+  return usuario.id
+}
 
 /** Limite da biografia (o back-end também valida). */
 export const MAX_BIO = 280
@@ -16,6 +35,7 @@ export const usuariosApi = {
     const usuario = usuarios.find((u) => u.id === id)
     if (!usuario) throw new Error('Membro não encontrado.')
     Object.assign(usuario, structuredClone(dados))
+    salvarUsuarios()
     return respostaMock(usuario)
   },
 
@@ -48,6 +68,7 @@ export const usuariosApi = {
     if (!usuario) return Promise.reject(new Error(`Usuário ${id} não encontrado`))
     if (dados.bio.length > MAX_BIO) return Promise.reject(new Error('Biografia maior que o permitido'))
     Object.assign(usuario, structuredClone(dados))
+    salvarUsuarios()
     return respostaMock(usuario)
   },
 }

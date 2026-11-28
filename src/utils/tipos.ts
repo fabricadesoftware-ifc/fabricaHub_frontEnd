@@ -16,6 +16,7 @@ export interface Usuario {
   nome: string
   /** Nome completo (vem do GitHub). */
   nomeCompleto: string
+  area?: string
   /** Login do GitHub, sem o @. */
   usuario: string
   iniciais: string
@@ -74,7 +75,7 @@ export interface AtividadeGithub {
 }
 
 export type StatusProjeto = 'Em andamento' | 'Planejamento' | 'Pausado' | 'Concluído'
-export type Prioridade = 'Alta' | 'Média' | 'Baixa'
+export type Prioridade = string
 export type StatusTarefa = 'A fazer' | 'Fazendo' | 'Em revisão' | 'Concluída'
 
 export interface MembroProjeto {

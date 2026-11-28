@@ -6,8 +6,9 @@ import { useAuthStore } from '@/stores/auth'
 import { useProjetosStore } from '@/stores/projetos'
 import type { Prioridade, TamanhoTarefa, Tarefa } from '@/utils/tipos'
 
-export const FUNCOES = ['Front-end', 'Back-end', 'Design', 'Mobile', 'DevOps', 'Embarcados']
-export const PRIORIDADES: Prioridade[] = ['Baixa', 'Média', 'Alta']
+import { catalogo } from '@/api/cadastros'
+export const FUNCOES = catalogo.Funções
+export const PRIORIDADES = catalogo.Prioridades
 export const TAMANHOS: TamanhoTarefa[] = ['P', 'M', 'G']
 
 const PALAVRAS_VAZIAS = ['tela', 'para', 'com', 'dos', 'das', 'nos', 'nas', 'uma', 'por']
@@ -54,7 +55,7 @@ export function useNovaTarefa(idProjeto: Ref<number | null>) {
     branch: 'feat/',
     idResponsavel: null,
     funcao: 'Front-end',
-    prioridade: 'Média',
+    prioridade: PRIORIDADES.includes('Média') ? 'Média' : PRIORIDADES[0] ?? '',
     tamanho: 'M',
     prazo: '',
   })

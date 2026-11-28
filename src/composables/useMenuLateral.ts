@@ -1,7 +1,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter, type RouteLocationRaw } from 'vue-router'
 import type { NomeIcone } from '@/components/global/IconeSvg.vue'
-import { useAcessos } from '@/composables/useAcessos'
+import { pedidosAcesso } from '@/api/acesso'
 import { useMensagens } from '@/composables/useMensagens'
 import { useNoticias } from '@/composables/useNoticias'
 import { useRole } from '@/composables/useRole'
@@ -41,13 +41,12 @@ export function useMenuLateral() {
   const { tarefas, carregar: carregarTarefas } = useTarefas()
   const { mensagens, carregar: carregarMensagens } = useMensagens()
   const { noticias, carregar: carregarNoticias } = useNoticias()
-  const { solicitacoes, carregar: carregarSolicitacoes } = useAcessos()
 
   // Contadores da sidebar: carrega tudo junto ao montar.
   // Até tudo chegar, a sidebar mostra o skeleton (evita contadores zerados piscando).
   const carregando = ref(true)
   onMounted(async () => {
-    await Promise.all([carregarTarefas(), carregarMensagens(), carregarNoticias(), carregarSolicitacoes()])
+    await Promise.all([carregarTarefas(), carregarMensagens(), carregarNoticias()])
     carregando.value = false
   })
   const { papel, leadsProject } = useRole()
@@ -62,7 +61,7 @@ export function useMenuLateral() {
   const revisoesPendentes = computed(
     () => tarefas.value.filter((t) => t.status === 'Em revisão' && leadsProject(t.idProjeto)).length,
   )
-  const acessosPendentes = computed(() => solicitacoes.value.filter((s) => s.pendente).length)
+  const acessosPendentes = computed(() => pedidosAcesso.value.filter((s) => s.pendente).length)
 
   /** Projetos em que o usuário é membro ou líder; os que ele lidera vêm primeiro. */
   const meusProjetos = computed(() => {
