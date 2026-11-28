@@ -13,7 +13,7 @@ const COLUNAS: { status: StatusTarefa; titulo: string }[] = [
 ]
 
 /** Quadro "Minhas tarefas": filtro por projeto, busca por título/branch e as 4 colunas. */
-export function useQuadroTarefas() {
+export function useQuadroTarefas(gestao = false) {
   const auth = useAuthStore()
   const projetosStore = useProjetosStore()
   const { tarefas, carregando, erro, carregar } = useTarefas()
@@ -21,16 +21,17 @@ export function useQuadroTarefas() {
   const filtroProjeto = ref<number | null>(null)
   const busca = ref('')
 
-  const minhas = computed(() => tarefas.value.filter((t) => t.idResponsavel === auth.usuario?.id))
+  const todas = computed(() => gestao && auth.usuario?.isSuper)
+  const visiveis = computed(() => todas.value ? tarefas.value : tarefas.value.filter(t => t.idResponsavel === auth.usuario?.id))
 
   /** Só os projetos onde o usuário tem tarefa viram filtro. */
   const projetosDoFiltro = computed(() =>
-    projetosStore.lista.filter((p) => minhas.value.some((t) => t.idProjeto === p.id)),
+    todas.value ? projetosStore.lista : projetosStore.lista.filter((p) => visiveis.value.some((t) => t.idProjeto === p.id)),
   )
 
   const filtradas = computed(() => {
     const termo = busca.value.trim().toLowerCase()
-    return minhas.value.filter(
+    return visiveis.value.filter(
       (t) =>
         (filtroProjeto.value === null || t.idProjeto === filtroProjeto.value) &&
         (!termo || t.titulo.toLowerCase().includes(termo) || t.branch.toLowerCase().includes(termo)),
@@ -53,7 +54,7 @@ export function useQuadroTarefas() {
     filtroProjeto,
     busca,
     projetosDoFiltro,
-    temTarefas: computed(() => minhas.value.length > 0),
+    temTarefas: computed(() => visiveis.value.length > 0),
     colunas,
   }
 }

@@ -7,6 +7,12 @@ import type { Conversa, Mensagem, TipoConversa } from '@/utils/tipos'
 const conversas: Conversa[] = structuredClone(conversasMock)
 const mensagens: Mensagem[] = structuredClone(mensagensMock)
 
+export function haConversaDeProjeto(id: number) {
+  return (
+    conversas.some((c) => c.idProjeto === id || (c.tipo === 'projeto' && c.idAlvo === id)) || mensagens.some((m) => m.idProjeto === id)
+  )
+}
+
 function proximoId(lista: { id: number }[]) {
   return Math.max(0, ...lista.map((item) => item.id)) + 1
 }

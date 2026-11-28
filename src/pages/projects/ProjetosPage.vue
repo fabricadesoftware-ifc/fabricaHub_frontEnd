@@ -12,6 +12,8 @@ import CartaoProjeto from '@/components/projects/CartaoProjeto.vue'
 import { STATUS_PROJETO, useListaProjetos } from '@/composables/useListaProjetos'
 import type { StatusProjeto } from '@/utils/tipos'
 
+defineProps<{ gestao?: boolean }>()
+
 const {
   carregar,
   carregando,
@@ -42,6 +44,7 @@ const rotulo = computed(() => `< ARQUIVO DE PROJETOS /> · ${total.value} PROJET
     <CabecalhoPagina class="surgir" :rotulo="rotulo" titulo="Todos os " destaque="projetos">
       <template #acoes>
         <CampoBusca v-model="busca" class="busca" placeholder="Buscar projeto..." label="Buscar projeto" />
+        <BotaoBase v-if="gestao" :para="{ name: 'admin-projetos-criar' }">Novo projeto</BotaoBase>
       </template>
     </CabecalhoPagina>
 

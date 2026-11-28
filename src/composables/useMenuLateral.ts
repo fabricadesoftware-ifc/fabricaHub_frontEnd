@@ -88,7 +88,7 @@ export function useMenuLateral() {
         {
           etiqueta: '01 · GESTÃO',
           itens: [
-            { rotulo: 'Dashboard', icone: 'dashboard', para: { name: 'dashboard' } },
+            { rotulo: 'Dashboard', icone: 'dashboard', para: { name: 'admin-dashboard' } },
             { rotulo: 'Acessos', icone: 'acessos', para: { name: 'admin-acessos' }, contador: acessosPendentes.value, atencao: true },
             { rotulo: 'Membros', icone: 'membros', para: { name: 'admin-membros' } },
             { rotulo: 'Projetos', icone: 'projetos', para: { name: 'admin-projetos' } },

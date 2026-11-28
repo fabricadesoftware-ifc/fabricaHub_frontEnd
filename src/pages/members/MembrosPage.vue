@@ -12,8 +12,10 @@ import CrachaMembro from '@/components/members/CrachaMembro.vue'
 import { useListaMembros, type FiltroStatusMembro } from '@/composables/useListaMembros'
 import { cursoCurto } from '@/utils/pessoas'
 
-const { carregar, carregando, erro, status, curso, area, busca, cursos, areas, total, filtrados, temFiltro, limparFiltros } =
-  useListaMembros()
+const props = defineProps<{ gestao?: boolean }>()
+
+const { carregar, carregando, erro, status, curso, area, papelGestao, busca, cursos, areas, total, filtrados, temFiltro, limparFiltros } =
+  useListaMembros(props.gestao)
 
 onMounted(carregar)
 
@@ -37,6 +39,7 @@ const rotulo = computed(() => `< MEMBROS /> · ${total.value} PESSOAS`)
     <div class="filtros surgir" style="--ordem: 1">
       <GrupoPilulas v-model="status" :opcoes="opcoesStatus" label="Filtrar por situação" />
       <div class="selects">
+        <CampoSelect v-if="gestao" v-model="papelGestao" label="Papel" :opcoes="['Admin', 'Líder', 'Membro']" vazio="Todos" />
         <CampoSelect v-model="curso" label="Curso" :opcoes="cursos" vazio="Todos" />
         <CampoSelect v-model="area" label="Área" :opcoes="areas" vazio="Todas" />
       </div>

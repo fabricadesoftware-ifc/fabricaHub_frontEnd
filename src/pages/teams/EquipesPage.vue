@@ -12,6 +12,8 @@ import { useListaEquipes, type FiltroEquipes } from '@/composables/useListaEquip
 import { corTextoSobre } from '@/utils/cores'
 import { mesAno } from '@/utils/datas'
 
+defineProps<{ gestao?: boolean }>()
+
 const { carregar, carregando, erro, filtro, busca, total, filtrados, temFiltro, limparFiltros } = useListaEquipes()
 
 onMounted(carregar)
@@ -29,6 +31,7 @@ const rotulo = computed(() => `< QUADRO DE EQUIPES /> · ${total.value} EQUIPES`
     <CabecalhoPagina class="surgir" :rotulo="rotulo" titulo="Equipes da " destaque="Fábrica">
       <template #acoes>
         <CampoBusca v-model="busca" class="busca" placeholder="Buscar equipe..." label="Buscar equipe" />
+        <BotaoBase v-if="gestao" :para="{ name: 'admin-equipes-criar' }">Nova equipe</BotaoBase>
       </template>
     </CabecalhoPagina>
 

@@ -9,6 +9,16 @@ const usuarios: Usuario[] = structuredClone(usuariosMock)
 export const MAX_BIO = 280
 
 export const usuariosApi = {
+  async atualizarCadastro(id: number, dados: import('@/utils/gestao').CadastroMembro) {
+    if (![dados.nome, dados.nomeCompleto, dados.curso, dados.funcao].every((texto) => texto.trim())) {
+      throw new Error('Preencha os dados de identificação do membro.')
+    }
+    const usuario = usuarios.find((u) => u.id === id)
+    if (!usuario) throw new Error('Membro não encontrado.')
+    Object.assign(usuario, structuredClone(dados))
+    return respostaMock(usuario)
+  },
+
   // Futuro: client.get<Usuario>(`/usuarios/${id}`)
   obterPorId(id: number = ID_USUARIO_LOGADO): Promise<Usuario> {
     const usuario = usuarios.find((u) => u.id === id)

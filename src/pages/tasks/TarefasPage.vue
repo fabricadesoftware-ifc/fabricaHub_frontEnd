@@ -17,10 +17,12 @@ import { useProjetosStore } from '@/stores/projetos'
 import { dataCabecalho } from '@/utils/datas'
 import type { StatusTarefa, Tarefa } from '@/utils/tipos'
 
+const props = defineProps<{ gestao?: boolean }>()
+
 const rota = useRoute()
 const projetos = useProjetosStore()
 const { carregando, erro, carregar, tentarDeNovo, filtroProjeto, busca, projetosDoFiltro, temTarefas, colunas } =
-  useQuadroTarefas()
+  useQuadroTarefas(props.gestao)
 const { movendo, erroMover, destinos, mover } = useMoverTarefa()
 
 // Busca vinda do dashboard (?busca=...)
@@ -42,7 +44,7 @@ function projetoDe(id: number) {
 
 <template>
   <div class="pagina">
-    <CabecalhoPagina class="surgir" :rotulo="`< QUADRO DE TAREFAS /> · ${dataCabecalho()}`" titulo="Minhas " destaque="tarefas">
+    <CabecalhoPagina class="surgir" :rotulo="`< QUADRO DE TAREFAS /> · ${dataCabecalho()}`" :titulo="gestao ? 'Todas as ' : 'Minhas '" destaque="tarefas">
       <template #acoes>
         <CampoBusca v-model="busca" class="busca" placeholder="Buscar tarefa ou branch..." label="Buscar tarefa ou branch" />
       </template>
@@ -54,7 +56,7 @@ function projetoDe(id: number) {
         <EsqueletoBloco v-for="largura in ['72px', '150px', '104px', '112px']" :key="largura" :largura="largura" altura="36px" raio="999px" />
       </div>
       <FiltroProjetos v-else v-model="filtroProjeto" :projetos="projetosDoFiltro" />
-      <p class="regra">
+      <p v-if="!gestao" class="regra">
         <IconeSvg nome="info" :tamanho="14" />
         Você move suas tarefas até "Em revisão". Quem conclui é o líder do projeto.
       </p>
@@ -64,12 +66,12 @@ function projetoDe(id: number) {
     <p class="sr-only" role="status">{{ aviso }}</p>
 
     <EsqueletoQuadro v-if="carregando" />
-    <p v-if="carregando" class="sr-only" role="status">Carregando suas tarefas…</p>
+    <p v-if="carregando" class="sr-only" role="status">Carregando tarefas…</p>
     <EstadoErro v-else-if="erro" :mensagem="erro" @tentar-de-novo="tentarDeNovo" />
     <EstadoVazio
       v-else-if="!temTarefas"
-      titulo="Você ainda não tem tarefas."
-      texto="Quando o líder do projeto te passar uma tarefa, ela aparece em A fazer."
+      :titulo="gestao ? 'Nenhuma tarefa cadastrada.' : 'Você ainda não tem tarefas.'"
+      :texto="gestao ? '' : 'Quando o líder do projeto te passar uma tarefa, ela aparece em A fazer.'"
     />
     <div v-else class="quadro">
       <ColunaQuadro
@@ -87,7 +89,7 @@ function projetoDe(id: number) {
           :key="tarefa.id"
           :tarefa="tarefa"
           :projeto="projetoDe(tarefa.idProjeto)"
-          :destinos="destinos(tarefa)"
+          :destinos="gestao ? [] : destinos(tarefa)"
           :movendo="movendo === tarefa.id"
           @mover="moverTarefa(tarefa, $event)"
           />

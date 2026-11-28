@@ -2,23 +2,30 @@ import { computed, ref } from 'vue'
 import { estadoDasFontes } from '@/composables/useLista'
 import { useUsuarios } from '@/composables/useUsuarios'
 import { useProjetosStore } from '@/stores/projetos'
+import { papelPrincipal, papeisDoUsuario } from '@/utils/permissoes'
 import { nomeCurso, papelComunidade } from '@/utils/pessoas'
 
 export type FiltroStatusMembro = 'ativos' | 'inativos' | 'todos'
 
 /** Quem faz a Fábrica: filtros de status, curso e área, mais busca por nome ou @usuário. */
-export function useListaMembros() {
+export function useListaMembros(gestao = false) {
   const projetos = useProjetosStore()
   const usuariosFonte = useUsuarios()
   const { carregando, erro } = estadoDasFontes([usuariosFonte])
 
-  const status = ref<FiltroStatusMembro>('ativos')
+  const inicial = gestao ? 'todos' : 'ativos'
+  const status = ref<FiltroStatusMembro>(inicial)
+  const papelGestao = ref('')
   const curso = ref('')
   const area = ref('')
   const busca = ref('')
 
   const itens = computed(() =>
-    usuariosFonte.usuarios.value.map((usuario) => ({ usuario, papel: papelComunidade(usuario, projetos.lista) })),
+    usuariosFonte.usuarios.value.map((usuario) => ({
+      usuario,
+      papel: papelComunidade(usuario, projetos.lista),
+      papelGestao: { admin: 'Admin', lider: 'Líder', membro: 'Membro' }[papelPrincipal(papeisDoUsuario(usuario, projetos.lista))],
+    })),
   )
 
   const cursos = computed(() => [...new Set(itens.value.map((i) => nomeCurso(i.usuario.curso)))].sort())
@@ -27,18 +34,20 @@ export function useListaMembros() {
   const filtrados = computed(() => {
     const termo = busca.value.trim().toLowerCase().replace(/^@/, '')
     return itens.value.filter(
-      ({ usuario }) =>
+      ({ usuario, papelGestao: papel }) =>
+        (!papelGestao.value || papel === papelGestao.value) &&
         (status.value === 'todos' || usuario.ativo === (status.value === 'ativos')) &&
         (!curso.value || nomeCurso(usuario.curso) === curso.value) &&
         (!area.value || usuario.funcao === area.value) &&
-        (!termo || `${usuario.nome} ${usuario.nomeCompleto} ${usuario.usuario}`.toLowerCase().includes(termo)),
+        (!termo || `${usuario.nome} ${usuario.nomeCompleto} ${usuario.usuario} ${gestao ? [papel, usuario.funcao, ...(usuario.tags ?? [])].join(' ') : ''}`.toLowerCase().includes(termo)),
     )
   })
 
-  const temFiltro = computed(() => status.value !== 'ativos' || !!(curso.value || area.value || busca.value.trim()))
+  const temFiltro = computed(() => status.value !== inicial || !!papelGestao.value || !!(curso.value || area.value || busca.value.trim()))
 
   function limparFiltros() {
-    status.value = 'ativos'
+    status.value = inicial
+    papelGestao.value = ''
     curso.value = ''
     area.value = ''
     busca.value = ''
@@ -49,6 +58,7 @@ export function useListaMembros() {
     carregando,
     erro,
     status,
+    papelGestao,
     curso,
     area,
     busca,

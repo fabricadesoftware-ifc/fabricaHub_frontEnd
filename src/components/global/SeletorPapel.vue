@@ -38,6 +38,8 @@ async function trocar(novo: PerfilDev) {
     if (!auth.logado) return
     if (novo === 'nao-autorizado') {
       await router.replace({ name: 'acesso-negado' })
+    } else if (novo === 'admin' && rota.name === 'dashboard') {
+      await router.replace({ name: 'admin-dashboard' })
     } else if (rota.name === 'acesso-negado') {
       await router.replace({ name: 'dashboard' })
     } else if (!rota.meta.publica && !podeAcessar(rota, auth.usuario, projetos.lista)) {

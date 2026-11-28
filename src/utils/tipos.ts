@@ -20,6 +20,7 @@ export interface Usuario {
   usuario: string
   iniciais: string
   funcao: string
+  tags?: string[]
   isSuper: boolean
   online: boolean
   /** Cor do avatar (iniciais). */

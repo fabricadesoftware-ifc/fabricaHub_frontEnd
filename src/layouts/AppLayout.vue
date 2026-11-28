@@ -1,9 +1,6 @@
 <script setup lang="ts">
 import BarraLateral from '@/components/global/BarraLateral.vue'
-import { useRole } from '@/composables/useRole'
 
-// Membro e líder têm telas (o líder usa as do membro e mais as dele); o admin ainda vê só a sidebar.
-const { papel } = useRole()
 </script>
 
 <template>
@@ -13,7 +10,7 @@ const { papel } = useRole()
     <main id="conteudo" class="conteudo" tabindex="-1">
       <RouterView v-slot="{ Component, route }">
         <Transition name="pagina" mode="out-in">
-          <component :is="Component" v-if="papel !== 'admin'" :key="route.path" />
+          <component :is="Component" :key="route.path" />
         </Transition>
       </RouterView>
     </main>
