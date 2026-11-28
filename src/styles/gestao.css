@@ -1,0 +1,102 @@
+.gestao,
+.gestao form {
+  display: grid;
+  gap: 20px;
+  min-width: 0;
+}
+/* Reserva espaço para os controles de desenvolvimento fixos no canto inferior. */
+#app:has(.seletor) .gestao {
+  padding-bottom: 120px;
+}
+.gestao .grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+  gap: 18px;
+  align-items: start;
+}
+.gestao .contadores {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(155px, 100%), 1fr));
+  gap: 16px;
+}
+.gestao div.linha {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 10px 0;
+  gap: 12px;
+  min-width: 0;
+  border-bottom: 1px solid var(--border);
+}
+.gestao .linha:last-child {
+  border-bottom: 0;
+}
+.gestao .identidade {
+  flex: 1 1 160px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.gestao .identidade strong,
+.gestao .identidade small {
+  display: block;
+}
+.gestao small {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+.gestao .link {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+.gestao .link:hover {
+  text-decoration: underline;
+}
+.gestao .filtros,
+.gestao .botoes {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.gestao .campo {
+  display: grid;
+  gap: 6px;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+.gestao .campo :is(input, textarea, select) {
+  color-scheme: dark;
+  min-width: 0;
+  width: 100%;
+  min-height: 44px;
+  border-radius: var(--radius-btn);
+  background: var(--ink);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 10px 12px;
+  font: inherit;
+}
+.gestao textarea {
+  resize: vertical;
+}
+.gestao .botoes {
+  justify-content: flex-end;
+}
+.gestao .alerta {
+  color: var(--brand-orange);
+}
+.gestao dialog {
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-menu);
+  box-shadow: var(--shadow-hard);
+  margin: auto;
+  padding: 24px;
+  width: min(420px, 90vw);
+}
+.gestao dialog::backdrop {
+  background: rgb(0 0 0 / 0.75);
+}
