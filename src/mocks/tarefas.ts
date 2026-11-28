@@ -94,6 +94,10 @@ export const tarefas: Tarefa[] = [
     descricao: 'O filtro de equipes não limpava a busca ao trocar de projeto.',
     idCriador: 2,
     criadaEm: diasAtras(7, '14:00'),
+    entregas: 1,
+    enviadaEm: diasAtras(0, '10:20'),
+    pr: 48,
+    notaEntrega: 'O filtro agora aceita mais de uma equipe e lembra a última escolha. Testei no celular também.',
   },
   {
     id: 16,
@@ -202,6 +206,10 @@ export const tarefas: Tarefa[] = [
     descricao: 'Login dos alunos pela conta do SUAP.',
     idCriador: 2,
     criadaEm: diasAtras(11, '10:00'),
+    entregas: 2,
+    enviadaEm: diasAtras(1, '16:40'),
+    pr: 51,
+    notaEntrega: 'Ajustei o que você pediu: o token agora renova sozinho antes de expirar.',
   },
   {
     id: 22,
@@ -219,6 +227,10 @@ export const tarefas: Tarefa[] = [
     descricao: 'Endpoints do quiz de identificação de tecidos.',
     idCriador: 2,
     criadaEm: diasAtras(9, '08:30'),
+    entregas: 1,
+    enviadaEm: diasAtras(2, '09:05'),
+    pr: 33,
+    notaEntrega: 'As lâminas novas já estão no atlas, falta só conferir as legendas.',
   },
   {
     id: 23,

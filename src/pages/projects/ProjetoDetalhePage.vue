@@ -15,6 +15,7 @@ import RotuloSecao from '@/components/global/RotuloSecao.vue'
 import TrilhaNavegacao from '@/components/global/TrilhaNavegacao.vue'
 import ItemMensagem from '@/components/messages/ItemMensagem.vue'
 import { useProjetoDetalhe } from '@/composables/useProjetoDetalhe'
+import { useRole } from '@/composables/useRole'
 import { useAuthStore } from '@/stores/auth'
 import { corStatusTarefa } from '@/utils/cores'
 import { tempoRelativo } from '@/utils/datas'
@@ -27,6 +28,7 @@ const ABAS: Aba[] = ['visao', 'tarefas', 'mensagens']
 const rota = useRoute()
 const router = useRouter()
 const auth = useAuthStore()
+const { leadsProject } = useRole()
 const id = computed(() => Number(rota.params.id))
 
 const {
@@ -50,6 +52,9 @@ const {
 } = useProjetoDetalhe(id)
 
 onMounted(carregar)
+
+/** Ações de líder só aparecem no projeto que o usuário lidera. */
+const ehLider = computed(() => leadsProject(id.value))
 
 /** A aba fica na query (?aba=tarefas), então dá para compartilhar o link e voltar. */
 const aba = computed<Aba>({
@@ -137,7 +142,8 @@ function mensagemPara(pessoa: Usuario) {
             <span v-if="orientador">
               Orientador: <RouterLink :to="{ name: 'membro', params: { id: orientador.id } }">{{ orientador.nome }}</RouterLink>
             </span>
-            <span v-if="minhaFuncao" class="voce">Você: {{ minhaFuncao }}</span>
+            <span v-if="ehLider" class="voce">Você é o líder</span>
+            <span v-else-if="minhaFuncao" class="voce">Você: {{ minhaFuncao }}</span>
           </p>
         </template>
         <template #acoes>
@@ -146,6 +152,9 @@ function mensagemPara(pessoa: Usuario) {
           </BotaoBase>
           <BotaoBase v-if="projeto.figma" variante="secundario" :href="projeto.figma">
             <IconeSvg nome="externo" :tamanho="16" /> Figma
+          </BotaoBase>
+          <BotaoBase v-if="ehLider" :para="{ name: 'projeto-editar', params: { id: projeto.id } }">
+            <IconeSvg nome="editar" :tamanho="16" /> Editar projeto
           </BotaoBase>
         </template>
       </CabecalhoPagina>
@@ -213,12 +222,14 @@ function mensagemPara(pessoa: Usuario) {
             <section class="bloco">
               <div class="cabeca">
                 <RotuloSecao rotulo="[04] GALERIA" />
-                <span class="detalhe">{{ galeria.length }} {{ galeria.length === 1 ? 'ARQUIVO' : 'ARQUIVOS' }}</span>
+                <RouterLink v-if="ehLider" :to="{ name: 'projeto-galeria', params: { id: projeto.id } }" class="link-acao">Gerenciar galeria →</RouterLink>
+                <span v-else class="detalhe">{{ galeria.length }} {{ galeria.length === 1 ? 'ARQUIVO' : 'ARQUIVOS' }}</span>
               </div>
               <ul v-if="galeria.length" class="galeria">
                 <li v-for="imagem in galeria" :key="imagem.id" class="miniatura">
                   <span class="moldura">
-                    <img v-if="logoFabrica" :src="logoFabrica" alt="" />
+                    <img v-if="imagem.url" :src="imagem.url" :alt="imagem.arquivo" class="enviada" />
+                    <img v-else-if="logoFabrica" :src="logoFabrica" alt="" />
                     <IconeSvg v-else nome="arquivos" :tamanho="20" />
                   </span>
                   <span class="legenda">
@@ -235,7 +246,8 @@ function mensagemPara(pessoa: Usuario) {
           <section class="pessoas" aria-labelledby="titulo-pessoas">
             <div class="cabeca">
               <RotuloSecao rotulo="[05] PESSOAS"><span id="titulo-pessoas" class="sr-only">Pessoas do projeto</span></RotuloSecao>
-              <span class="detalhe">{{ pessoas.total }} {{ pessoas.total === 1 ? 'MEMBRO' : 'MEMBROS' }} · {{ equipes.length }} {{ equipes.length === 1 ? 'EQUIPE' : 'EQUIPES' }}</span>
+              <RouterLink v-if="ehLider" :to="{ name: 'projeto-membros', params: { id: projeto.id } }" class="link-acao">Gerenciar →</RouterLink>
+              <span v-else class="detalhe">{{ pessoas.total }} {{ pessoas.total === 1 ? 'MEMBRO' : 'MEMBROS' }} · {{ equipes.length }} {{ equipes.length === 1 ? 'EQUIPE' : 'EQUIPES' }}</span>
             </div>
 
             <div v-for="grupo in pessoas.grupos" :key="grupo.id" class="grupo">
@@ -283,11 +295,18 @@ function mensagemPara(pessoa: Usuario) {
         <!-- Tarefas (só leitura) -->
         <template v-else-if="aba === 'tarefas'">
           <div class="aviso-tarefas">
-            <p>
+            <p v-if="ehLider">
+              <IconeSvg nome="info" :tamanho="14" />
+              Para mover, criar ou revisar tarefas, use o quadro do projeto.
+            </p>
+            <p v-else>
               <IconeSvg nome="info" :tamanho="14" />
               Aqui você só consulta. Para mover as suas tarefas, use o quadro.
             </p>
-            <BotaoBase variante="secundario" :para="{ name: 'tarefas' }">Minhas tarefas →</BotaoBase>
+            <BotaoBase v-if="ehLider" variante="secundario" :para="{ name: 'projeto-tarefas', params: { id: projeto.id } }">
+              Quadro do projeto →
+            </BotaoBase>
+            <BotaoBase v-else variante="secundario" :para="{ name: 'tarefas' }">Minhas tarefas →</BotaoBase>
           </div>
           <ul v-if="tarefas.length" class="lista">
             <li v-for="tarefa in tarefas" :key="tarefa.id" class="linha">
@@ -531,7 +550,10 @@ function mensagemPara(pessoa: Usuario) {
 }
 
 .link-acao {
+  display: inline-flex;
+  align-items: center;
   min-height: 32px;
+  text-decoration: none;
   padding: 0;
   border: 0;
   background: transparent;
@@ -634,6 +656,13 @@ function mensagemPara(pessoa: Usuario) {
   height: 40%;
   object-fit: contain;
   opacity: .85;
+}
+
+.moldura img.enviada {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 1;
 }
 
 .legenda {

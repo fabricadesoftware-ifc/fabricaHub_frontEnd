@@ -15,7 +15,20 @@ export function registrarHistorico(idTarefa: number, status: StatusTarefa, idAut
   historico.push({ id: proximoId(historico), idTarefa, status, idAutor, acao, em: new Date().toISOString() })
 }
 
+/** Ações que contam como revisão do líder. */
+export const ACOES_REVISAO = ['aprovou a entrega', 'devolveu para ajustes']
+
 export const discussaoApi = {
+  /** Quantas revisões (aprovar ou devolver) a pessoa fez hoje. */
+  // Futuro: client.get<number>('/revisoes/hoje')
+  contarRevisoesDeHoje(idAutor: number): Promise<number> {
+    const hoje = new Date().toDateString()
+    const total = historico.filter(
+      (h) => h.idAutor === idAutor && ACOES_REVISAO.includes(h.acao) && new Date(h.em).toDateString() === hoje,
+    ).length
+    return respostaMock(total)
+  },
+
   // Futuro: client.get<ComentarioTarefa[]>(`/tarefas/${idTarefa}/comentarios`)
   listarComentarios(idTarefa: number): Promise<ComentarioTarefa[]> {
     return respostaMock(comentarios.filter((c) => c.idTarefa === idTarefa))

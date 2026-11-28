@@ -42,17 +42,22 @@ export function podeAcessar(rota: RouteLocationNormalized, usuario: Usuario | nu
 /** Status que o membro pode escolher para as próprias tarefas (concluir é com o líder). */
 export const STATUS_DO_MEMBRO: readonly StatusTarefa[] = ['A fazer', 'Fazendo', 'Em revisão']
 
+const TODOS_STATUS: readonly StatusTarefa[] = ['A fazer', 'Fazendo', 'Em revisão', 'Concluída']
+
 /**
- * Para onde o usuário pode mover a tarefa. Membro: só as próprias, só enquanto
- * estão em "A fazer" ou "Fazendo", e no máximo até "Em revisão".
- * (A aprovação do líder fica na tela de Revisões.)
+ * Para onde o usuário pode mover a tarefa.
+ * Líder do projeto: qualquer tarefa do projeto, para qualquer status
+ * (passar de "Em revisão" para "Concluída" conta como aprovação).
+ * Membro: só as próprias, só enquanto estão em "A fazer" ou "Fazendo", e no máximo até "Em revisão".
  */
-export function destinosDaTarefa(usuario: Usuario | null, tarefa: Tarefa): StatusTarefa[] {
-  if (!usuario || tarefa.idResponsavel !== usuario.id) return []
+export function destinosDaTarefa(usuario: Usuario | null, tarefa: Tarefa, projetos: Projeto[] = []): StatusTarefa[] {
+  if (!usuario) return []
+  if (lideraProjeto(usuario, projetos, tarefa.idProjeto)) return TODOS_STATUS.filter((s) => s !== tarefa.status)
+  if (tarefa.idResponsavel !== usuario.id) return []
   if (tarefa.status === 'Em revisão' || tarefa.status === 'Concluída') return []
   return STATUS_DO_MEMBRO.filter((s) => s !== tarefa.status)
 }
 
-export function podeMoverTarefa(usuario: Usuario | null, tarefa: Tarefa, para: StatusTarefa): boolean {
-  return destinosDaTarefa(usuario, tarefa).includes(para)
+export function podeMoverTarefa(usuario: Usuario | null, tarefa: Tarefa, para: StatusTarefa, projetos: Projeto[] = []): boolean {
+  return destinosDaTarefa(usuario, tarefa, projetos).includes(para)
 }
