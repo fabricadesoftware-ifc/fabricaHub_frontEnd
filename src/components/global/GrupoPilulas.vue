@@ -1,12 +1,17 @@
 <script setup lang="ts" generic="T extends string | null">
-/** Filtro em pílulas (só uma ativa). Cada botão tem `aria-pressed`. */
-defineProps<{ opcoes: { valor: T; rotulo: string }[]; label: string }>()
+/**
+ * Escolha única em pílulas (só uma ativa). Cada botão tem `aria-pressed`.
+ * `segmentado`: botões colados numa barra só (ex.: prioridade Baixa / Média / Alta num formulário).
+ */
+withDefaults(defineProps<{ opcoes: { valor: T; rotulo: string }[]; label: string; variante?: 'pilulas' | 'segmentado' }>(), {
+  variante: 'pilulas',
+})
 
 const modelo = defineModel<T>({ required: true })
 </script>
 
 <template>
-  <div class="grupo-pilulas" role="group" :aria-label="label">
+  <div class="grupo-pilulas" :class="variante" role="group" :aria-label="label">
     <button
       v-for="opcao in opcoes"
       :key="String(opcao.valor)"
@@ -56,5 +61,35 @@ const modelo = defineModel<T>({ required: true })
 
 .pilula:active {
   transform: scale(.96);
+}
+
+/* Segmentado: uma barra com as opções lado a lado */
+.segmentado {
+  flex-wrap: nowrap;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-btn);
+  background: var(--ink);
+}
+
+.segmentado .pilula {
+  flex: 1;
+  justify-content: center;
+  min-height: 36px;
+  border-color: transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-muted);
+}
+
+.segmentado .pilula:hover {
+  color: var(--text);
+}
+
+.segmentado .pilula.ativa {
+  border-color: var(--border);
+  background: var(--surface-2);
+  color: var(--text);
 }
 </style>

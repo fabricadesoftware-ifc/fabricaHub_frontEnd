@@ -30,6 +30,10 @@ export type NomeIcone =
   | 'mais'
   | 'fechar'
   | 'figma'
+  | 'editar'
+  | 'lixeira'
+  | 'imagem'
+  | 'pr'
 
 withDefaults(defineProps<{ nome: NomeIcone; tamanho?: number }>(), { tamanho: 18 })
 
@@ -65,6 +69,10 @@ const caminhos: Record<NomeIcone, string> = {
   externo: 'M14 4h6v6M20 4l-9 9M18 14v6H4V6h6',
   mais: 'M12 5v14M5 12h14',
   fechar: 'M6 6l12 12M18 6L6 18',
+  editar: 'M4 20h4L19 9l-4-4L4 16zM13.5 6.5l4 4',
+  lixeira: 'M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6',
+  imagem: 'M4 5h16v14H4zM8.5 11a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zM20 15l-5-5-9 9',
+  pr: 'M6 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM6 20a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM18 20a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM6 8v8M18 16V9a3 3 0 0 0-3-3h-4M13 4l-2 2 2 2',
   figma:
     'M9 3h3v6H9a3 3 0 0 1 0-6zM12 3h3a3 3 0 0 1 0 6h-3zM9 9h3v6H9a3 3 0 0 1 0-6zM15 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6zM9 15h3v3a3 3 0 1 1-3-3z',
 }

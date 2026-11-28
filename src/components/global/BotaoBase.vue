@@ -3,7 +3,8 @@ import type { RouteLocationRaw } from 'vue-router'
 
 withDefaults(
   defineProps<{
-    variante?: 'primario' | 'secundario'
+    /** `sucesso` (aprovar) e `perigo` (devolver, remover) para decisões. */
+    variante?: 'primario' | 'secundario' | 'sucesso' | 'perigo'
     tipo?: 'button' | 'submit' | 'reset'
     /** Ocupa a largura toda. */
     bloco?: boolean
@@ -70,6 +71,34 @@ withDefaults(
 
 .secundario:hover {
   border-color: rgba(255, 255, 255, .24);
+}
+
+.sucesso {
+  background: var(--online);
+  color: #08090A;
+  border: 0;
+  box-shadow: 0 3px 0 #1E6B2C;
+}
+
+.sucesso:not(:disabled):hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 0 #1E6B2C;
+}
+
+.sucesso:not(:disabled):active {
+  transform: translateY(3px);
+  box-shadow: 0 0 0 #1E6B2C;
+}
+
+.perigo {
+  background: transparent;
+  color: #FF6B5E;
+  border: 1px solid rgba(255, 32, 32, .5);
+}
+
+.perigo:not(:disabled):hover {
+  background: rgba(255, 32, 32, .08);
+  border-color: rgba(255, 32, 32, .8);
 }
 
 .botao:disabled {
