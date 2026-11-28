@@ -3,6 +3,9 @@ import { tarefas as tarefasMock } from '@/mocks/tarefas'
 import { respostaMock } from '@/utils/respostaMock'
 import type { DecisaoRevisao, NovaTarefa, StatusTarefa, Tarefa, TamanhoTarefa } from '@/utils/tipos'
 
+import { registrar } from './auditoria'
+import { usuarios } from './usuarios'
+
 const tarefas: Tarefa[] = structuredClone(tarefasMock)
 
 /** Estado atual das tarefas no mock, para outros módulos de `api/` (ex.: agenda). */
@@ -29,6 +32,10 @@ function aplicarStatus(tarefa: Tarefa, status: StatusTarefa) {
   }
 }
 
+function auditarTarefa(idAutor: number, acao: string) {
+  registrar(usuarios.find(u=>u.id===idAutor)?.usuario ?? String(idAutor), acao, 'Tarefa')
+}
+
 export const tarefasApi = {
   // Futuro: client.get<Tarefa[]>('/tarefas')
   listar(): Promise<Tarefa[]> {
@@ -47,6 +54,7 @@ export const tarefasApi = {
     if (!tarefa) return Promise.reject(new Error(`Tarefa ${id} não encontrada`))
     aplicarStatus(tarefa, status)
     registrarHistorico(id, status, idAutor, ACOES[status])
+    auditarTarefa(idAutor, tarefa.titulo + ' → ' + status)
     return respostaMock(tarefa)
   },
 
@@ -64,6 +72,7 @@ export const tarefasApi = {
       criadaEm: new Date().toISOString(),
     }
     tarefas.push(nova)
+    auditarTarefa(idCriador, 'Criou a tarefa ' + nova.titulo + '.')
     registrarHistorico(nova.id, 'A fazer', idCriador, 'criou a tarefa')
     return respostaMock(nova)
   },
@@ -85,6 +94,7 @@ export const tarefasApi = {
     if (decisao === 'devolver' && !comentario.trim()) throw new Error('Comentário obrigatório para devolver')
     aplicarStatus(tarefa, decisao === 'aprovar' ? 'Concluída' : 'Fazendo')
     registrarHistorico(id, tarefa.status, idAutor, decisao === 'aprovar' ? 'aprovou a entrega' : 'devolveu para ajustes')
+    auditarTarefa(idAutor, (decisao === 'aprovar' ? 'Aprovou ' : 'Devolveu ') + tarefa.titulo + '.')
     if (comentario.trim()) await discussaoApi.comentar(id, idAutor, comentario.trim())
     return respostaMock(tarefa)
   },

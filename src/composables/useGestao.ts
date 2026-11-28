@@ -45,7 +45,7 @@ export function useEdicaoGestao() {
     const origem = router.currentRoute.value
     try {
       await acao()
-      gestaoApi.registrar(autor, registro)
+      gestaoApi.registrar(autor, registro, destino === 'admin-projetos' ? 'Projeto' : 'Sistema')
       if (router.currentRoute.value === origem) await router.push({ name: auth.usuario?.isSuper ? destino : 'dashboard' })
     } catch (e) {
       aviso.value = e instanceof Error ? e.message : 'Não foi possível concluir a operação.'
