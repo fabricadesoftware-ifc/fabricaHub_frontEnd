@@ -13,5 +13,11 @@ export const useProjetosStore = defineStore('projetos', () => {
     lista.value = projetos
   }
 
-  return { lista, substituir }
+  /** Troca um projeto pela versão atualizada (depois de editar, mudar membros etc.). */
+  function atualizar(projeto: Projeto) {
+    const i = lista.value.findIndex((p) => p.id === projeto.id)
+    if (i >= 0) lista.value.splice(i, 1, projeto)
+  }
+
+  return { lista, substituir, atualizar }
 })

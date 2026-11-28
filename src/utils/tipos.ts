@@ -79,6 +79,8 @@ export type StatusTarefa = 'A fazer' | 'Fazendo' | 'Em revisão' | 'Concluída'
 export interface MembroProjeto {
   idUsuario: number
   funcao: string
+  /** Entrada no projeto, ISO (só a data). */
+  desde?: string
 }
 
 export interface Projeto {
@@ -99,7 +101,10 @@ export interface Projeto {
   figma?: string
 }
 
-export type TipoArquivoGaleria = 'LOGO' | 'BANNER' | 'TELA'
+/** Campos que o líder edita em "Editar projeto" (líder e orientador só o admin troca). */
+export type DadosProjeto = Pick<Projeto, 'nome' | 'descricao' | 'status' | 'tecnologias' | 'repositorio' | 'figma'>
+
+export type TipoArquivoGaleria = 'LOGO' | 'BANNER' | 'TELA' | 'OUTRO'
 
 export interface ImagemGaleria {
   id: number
@@ -107,7 +112,17 @@ export interface ImagemGaleria {
   /** Nome do arquivo (ex.: "logo.png"). */
   arquivo: string
   tipo: TipoArquivoGaleria
+  tamanhoKb: number
+  largura: number
+  altura: number
+  idAutor: number
+  /** Envio, ISO (só a data). */
+  data: string
+  /** Imagem enviada nesta sessão (data URL); sem `url`, mostra a imagem de exemplo. */
+  url?: string
 }
+
+export type NovaImagem = Omit<ImagemGaleria, 'id' | 'idProjeto' | 'data'>
 
 export type TamanhoTarefa = 'P' | 'M' | 'G'
 export type TipoTarefa = 'Feature' | 'Bug' | 'Chore'
@@ -135,7 +150,23 @@ export interface Tarefa {
   prazo?: string
   /** Quando o líder aprovou, ISO (data e hora). */
   aprovadaEm?: string
+  /** Quantas vezes foi enviada para revisão (2 = voltou uma vez). */
+  entregas?: number
+  /** Quando foi enviada para revisão pela última vez, ISO (data e hora). */
+  enviadaEm?: string
+  /** Número do pull request da entrega. */
+  pr?: number
+  /** Recado de quem entregou para o líder. */
+  notaEntrega?: string
 }
+
+/** Campos do formulário "Nova tarefa". */
+export type NovaTarefa = Pick<
+  Tarefa,
+  'titulo' | 'descricao' | 'branch' | 'idProjeto' | 'idResponsavel' | 'funcao' | 'prioridade' | 'tamanho' | 'prazo'
+>
+
+export type DecisaoRevisao = 'aprovar' | 'devolver'
 
 export interface ComentarioTarefa {
   id: number

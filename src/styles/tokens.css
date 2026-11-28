@@ -60,4 +60,7 @@
   /* Superfícies temáticas do dashboard */
   --surface-pasta: #221D18;  /* pastas de projeto (papel pardo escuro) */
   --cortica: #3A2A1D;        /* mural das equipes */
+  --papel-ficha: #EDE3CC;    /* ficha de papel (prévia da nova tarefa) */
+  --tinta: #2B2620;          /* texto escrito na ficha de papel */
+  --tinta-suave: #7A6E5D;    /* rótulos na ficha de papel */
 }

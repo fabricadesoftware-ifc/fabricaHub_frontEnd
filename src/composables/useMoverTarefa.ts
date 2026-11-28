@@ -2,12 +2,14 @@ import { ref } from 'vue'
 import { tarefasApi } from '@/api/tarefas'
 import { useTarefas } from '@/composables/useTarefas'
 import { useAuthStore } from '@/stores/auth'
+import { useProjetosStore } from '@/stores/projetos'
 import { destinosDaTarefa, podeMoverTarefa } from '@/utils/permissoes'
 import type { StatusTarefa, Tarefa } from '@/utils/tipos'
 
-/** Mover tarefa entre colunas, respeitando a regra do membro (ver utils/permissoes.ts). */
+/** Mover tarefa entre colunas, respeitando a regra do membro e do líder (ver utils/permissoes.ts). */
 export function useMoverTarefa() {
   const auth = useAuthStore()
+  const projetos = useProjetosStore()
   const { substituir } = useTarefas()
 
   /** Id da tarefa que está sendo movida (para desabilitar os botões dela). */
@@ -15,12 +17,12 @@ export function useMoverTarefa() {
   const erroMover = ref<string | null>(null)
 
   function destinos(tarefa: Tarefa): StatusTarefa[] {
-    return destinosDaTarefa(auth.usuario, tarefa)
+    return destinosDaTarefa(auth.usuario, tarefa, projetos.lista)
   }
 
   async function mover(tarefa: Tarefa, para: StatusTarefa): Promise<Tarefa | null> {
     if (movendo.value !== null || !auth.usuario) return null
-    if (!podeMoverTarefa(auth.usuario, tarefa, para)) {
+    if (!podeMoverTarefa(auth.usuario, tarefa, para, projetos.lista)) {
       erroMover.value = 'Você não pode mover esta tarefa para esse status.'
       return null
     }
