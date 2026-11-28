@@ -18,6 +18,7 @@ import LinhaTarefa from '@/components/tasks/LinhaTarefa.vue'
 import CartaoEquipe from '@/components/teams/CartaoEquipe.vue'
 import { useDashboard } from '@/composables/useDashboard'
 import { useMoverTarefa } from '@/composables/useMoverTarefa'
+import { useRole } from '@/composables/useRole'
 import { useAuthStore } from '@/stores/auth'
 import { dataCabecalho, dataCurta, isoDia, saudacao } from '@/utils/datas'
 import type { Usuario } from '@/utils/tipos'
@@ -32,6 +33,7 @@ const {
   abertas,
   abertasAlta,
   emRevisao,
+  paraRevisar,
   caderno,
   meusProjetos,
   naoLidas,
@@ -47,6 +49,7 @@ const {
   tituloTarefa,
 } = useDashboard()
 const { movendo, erroMover, destinos, mover } = useMoverTarefa()
+const { isLeader } = useRole()
 
 onMounted(carregar)
 
@@ -92,7 +95,10 @@ function membrosDa(ids: number[]): Usuario[] {
           label="[01] Minhas tarefas"
           :descricao="`abertas · ${abertasAlta} com prioridade alta`"
         />
-        <FichaContador class="surgir" style="--ordem: 2" :numero="emRevisao" label="[02] Em revisão" descricao="aguardando o líder" />
+        <RouterLink v-if="isLeader" :to="{ name: 'revisoes' }" class="ficha-link surgir" style="--ordem: 2">
+          <FichaContador :numero="paraRevisar" label="[02] Para revisar" descricao="entregas nos seus projetos" />
+        </RouterLink>
+        <FichaContador v-else class="surgir" style="--ordem: 2" :numero="emRevisao" label="[02] Em revisão" descricao="aguardando o líder" />
         <FichaContador class="surgir" style="--ordem: 3" :numero="meusProjetos.length" label="[03] Projetos" descricao="em que você participa" />
         <FichaContador
           class="surgir"
@@ -266,6 +272,17 @@ function membrosDa(ids: number[]): Usuario[] {
   border-radius: var(--radius-btn);
   font-size: 13px;
   color: var(--brand-red);
+}
+
+.ficha-link {
+  display: flex;
+  flex-direction: column;
+  color: inherit;
+  text-decoration: none;
+}
+
+.ficha-link > * {
+  flex: 1;
 }
 
 .fichas {

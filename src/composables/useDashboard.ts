@@ -64,6 +64,13 @@ export function useDashboard() {
   const abertasAlta = computed(() => abertas.value.filter((t) => t.prioridade === 'Alta').length)
   const emRevisao = computed(() => minhas.value.filter((t) => t.status === 'Em revisão').length)
   const caderno = computed(() => [...abertas.value].sort(ordenarTarefas).slice(0, 4))
+  /** Líder: entregas "Em revisão" nos projetos que ele lidera. */
+  const paraRevisar = computed(
+    () =>
+      tarefasFonte.tarefas.value.filter(
+        (t) => t.status === 'Em revisão' && projetosStore.lista.some((p) => p.id === t.idProjeto && p.idLead === idUsuario.value),
+      ).length,
+  )
 
   // Projetos em que participa (líder ou membro)
   const meusProjetos = computed(() =>
@@ -120,6 +127,7 @@ export function useDashboard() {
     abertas,
     abertasAlta,
     emRevisao,
+    paraRevisar,
     caderno,
     meusProjetos,
     naoLidas,
