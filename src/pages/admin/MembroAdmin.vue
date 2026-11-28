@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, reactive, useTemplateRef } from 'vue'
+import { catalogo } from '@/api/cadastros'
 import BotaoBase from '@/components/global/BotaoBase.vue'
 import EstadoVazio from '@/components/global/EstadoVazio.vue'
 import { useRoute } from 'vue-router'
@@ -9,13 +10,13 @@ import CartaoSecao from '@/components/global/CartaoSecao.vue'
 import { fontesGestao as fontes, useCargaGestao, useEdicaoGestao } from '@/composables/useGestao'
 const id = Number(useRoute().params.id)
 const { salvarMembro, ocupado, aviso } = useEdicaoGestao()
-const form = reactive({ nome: '', nomeCompleto: '', curso: '', funcao: '', ativo: true, isSuper: false, tags: [] as string[] })
+const form = reactive({ nome: '', nomeCompleto: '', curso: '', area: '', funcao: '', ativo: true, isSuper: false, tags: [] as string[] })
 const { dado, carregando, erro, carregar } = useCargaGestao(async () => {
   const [membros, tags] = await Promise.all([fontes.membros(), fontes.tags()])
   const m = membros.find((m) => m.id === id)
   if (!m) return null
   const { nome, nomeCompleto, curso, funcao, ativo, isSuper } = m
-  Object.assign(form, { nome, nomeCompleto, curso, funcao, ativo, isSuper, tags: m.tags ?? [] })
+  Object.assign(form, { area: m.area ?? funcao, nome, nomeCompleto, curso, funcao, ativo, isSuper, tags: m.tags ?? [] })
   return { m, tags }
 })
 const dialogo = useTemplateRef<HTMLDialogElement>('dialogo')
@@ -57,11 +58,14 @@ function remover(tag: string) {
           </label>
           <label class="campo">
             Curso
-            <input v-model.trim="form.curso" required />
+            <select v-model="form.curso" required><option v-for="c in catalogo.Cursos" :key="c">{{ c }}</option></select>
           </label>
           <label class="campo">
             Função
-            <input v-model.trim="form.funcao" required />
+            <select v-model="form.funcao" required><option v-for="f in catalogo.Funções" :key="f">{{ f }}</option></select>
+          </label>
+          <label class="campo">Área
+            <select v-model="form.area"><option v-for="a in catalogo.Áreas" :key="a">{{ a }}</option></select>
           </label>
         </div>
       </CartaoSecao>

@@ -5,7 +5,7 @@ const ORDEM_PRIORIDADE: Record<Prioridade, number> = { Alta: 0, Média: 1, Baixa
 
 /** Fazendo primeiro, depois A fazer, Em revisão e Concluída; dentro de cada um, prioridade mais alta antes. */
 export function ordenarTarefas(a: Tarefa, b: Tarefa): number {
-  return ORDEM_STATUS[a.status] - ORDEM_STATUS[b.status] || ORDEM_PRIORIDADE[a.prioridade] - ORDEM_PRIORIDADE[b.prioridade]
+  return ORDEM_STATUS[a.status] - ORDEM_STATUS[b.status] || (ORDEM_PRIORIDADE[a.prioridade] ?? 3) - (ORDEM_PRIORIDADE[b.prioridade] ?? 3)
 }
 
 /** "G · 6h" */
