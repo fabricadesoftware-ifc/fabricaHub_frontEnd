@@ -1,8 +1,11 @@
-import { galeria as galeriaMock, projetos as projetosMock } from '@/mocks/projetos'
+import { eventos } from '@/mocks/agenda'
+import { equipes } from '@/mocks/comunidade'
+import { tarefasEmMemoria } from '@/api/tarefas'
+import { haConversaDeProjeto } from '@/api/mensagens'
+import { galeria as galeriaMock, projetos } from '@/mocks/projetos'
 import { respostaMock } from '@/utils/respostaMock'
 import type { DadosProjeto, ImagemGaleria, NovaImagem, Projeto, TipoArquivoGaleria } from '@/utils/tipos'
 
-const projetos: Projeto[] = structuredClone(projetosMock)
 const galeria: ImagemGaleria[] = structuredClone(galeriaMock)
 
 function encontrar(id: number): Projeto {
@@ -28,6 +31,42 @@ function garantirLogoUnica(idProjeto: number, idNovaLogo: number) {
 }
 
 export const projetosApi = {
+  async salvarCadastro(id: number | null, dados: import('@/utils/gestao').CadastroProjeto) {
+    if (!dados.nome.trim() || !dados.resumo.trim()) throw new Error('Preencha o nome e o resumo do projeto.')
+    if (!dados.idLead || !dados.idOrientador) throw new Error('Selecione o líder e o orientador.')
+    const projeto: Projeto =
+      id !== null
+        ? encontrar(id)
+        : {
+            ...dados,
+            id: Math.max(0, ...projetos.map((p) => p.id)) + 1,
+            sigla: '',
+            cor: '#FF6600',
+            membros: [],
+            tecnologias: [],
+            progresso: 0,
+          }
+    Object.assign(projeto, dados, { sigla: dados.nome.charAt(0).toUpperCase() })
+    if (!projeto.membros.some((m) => m.idUsuario === dados.idLead)) {
+      projeto.membros.push({ idUsuario: dados.idLead, funcao: 'Líder' })
+    }
+    if (id === null) projetos.push(projeto)
+    return respostaMock(projeto)
+  },
+  async excluirCadastro(id: number) {
+    if (
+      tarefasEmMemoria().some((t) => t.idProjeto === id) ||
+      equipes.some((e) => e.projetos.some((p) => p.idProjeto === id)) ||
+      galeria.some((i) => i.idProjeto === id) ||
+      haConversaDeProjeto(id) ||
+      eventos.some((e) => e.idProjeto === id)
+    ) {
+      throw new Error('Este projeto possui registros vinculados e não pode ser excluído.')
+    }
+    projetos.splice(projetos.indexOf(encontrar(id)), 1)
+    return respostaMock(undefined)
+  },
+
   // Futuro: client.get<Projeto[]>('/projetos')
   listar(): Promise<Projeto[]> {
     return respostaMock(projetos)
