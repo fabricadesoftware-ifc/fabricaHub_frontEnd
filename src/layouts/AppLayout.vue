@@ -2,7 +2,7 @@
 import BarraLateral from '@/components/global/BarraLateral.vue'
 import { useRole } from '@/composables/useRole'
 
-// Por enquanto só o membro tem telas; líder e admin veem apenas a sidebar.
+// Membro e líder têm telas (o líder usa as do membro e mais as dele); o admin ainda vê só a sidebar.
 const { papel } = useRole()
 </script>
 
@@ -13,7 +13,7 @@ const { papel } = useRole()
     <main id="conteudo" class="conteudo" tabindex="-1">
       <RouterView v-slot="{ Component, route }">
         <Transition name="pagina" mode="out-in">
-          <component :is="Component" v-if="papel === 'membro'" :key="route.path" />
+          <component :is="Component" v-if="papel !== 'admin'" :key="route.path" />
         </Transition>
       </RouterView>
     </main>

@@ -18,7 +18,7 @@ declare module 'vue-router' {
   }
 }
 
-// Telas de líder e admin ainda não existem: as rotas abrem uma página vazia (só a sidebar).
+// Telas de admin ainda não existem: as rotas abrem uma página vazia (só a sidebar).
 const PaginaVazia = () => import('@/pages/PaginaVazia.vue')
 
 const LIDER: Papel[] = ['lider', 'admin']
@@ -57,14 +57,32 @@ const routes: RouteRecordRaw[] = [
       // Todos
       { path: '', name: 'dashboard', component: () => import('@/pages/dashboard/DashboardPage.vue') },
       { path: 'tarefas', name: 'tarefas', component: () => import('@/pages/tasks/TarefasPage.vue') },
-      { path: 'tarefas/nova', name: 'tarefa-nova', component: PaginaVazia, meta: { roles: LIDER } },
+      { path: 'tarefas/nova', name: 'tarefa-nova', component: () => import('@/pages/tasks/NovaTarefaPage.vue'), meta: { roles: LIDER } },
       { path: 'tarefas/:id', name: 'tarefa', component: () => import('@/pages/tasks/TarefaDetalhePage.vue') },
       { path: 'projetos', name: 'projetos', component: () => import('@/pages/projects/ProjetosPage.vue') },
       { path: 'projetos/:id', name: 'projeto', component: () => import('@/pages/projects/ProjetoDetalhePage.vue') },
       {
         path: 'projetos/:id/tarefas',
         name: 'projeto-tarefas',
-        component: PaginaVazia,
+        component: () => import('@/pages/tasks/TarefasProjetoPage.vue'),
+        meta: { roles: LIDER, liderDoProjeto: true },
+      },
+      {
+        path: 'projetos/:id/membros',
+        name: 'projeto-membros',
+        component: () => import('@/pages/projects/MembrosProjetoPage.vue'),
+        meta: { roles: LIDER, liderDoProjeto: true },
+      },
+      {
+        path: 'projetos/:id/editar',
+        name: 'projeto-editar',
+        component: () => import('@/pages/projects/EditarProjetoPage.vue'),
+        meta: { roles: LIDER, liderDoProjeto: true },
+      },
+      {
+        path: 'projetos/:id/galeria',
+        name: 'projeto-galeria',
+        component: () => import('@/pages/projects/GaleriaProjetoPage.vue'),
         meta: { roles: LIDER, liderDoProjeto: true },
       },
       { path: 'equipes', name: 'equipes', component: () => import('@/pages/teams/EquipesPage.vue') },
@@ -76,7 +94,7 @@ const routes: RouteRecordRaw[] = [
       { path: 'membros/:id', name: 'membro', component: () => import('@/pages/members/MembroDetalhePage.vue') },
       { path: 'perfil', name: 'perfil', component: () => import('@/pages/members/PerfilPage.vue') },
       // Líder
-      { path: 'revisoes', name: 'revisoes', component: PaginaVazia, meta: { roles: LIDER } },
+      { path: 'revisoes', name: 'revisoes', component: () => import('@/pages/reviews/RevisoesPage.vue'), meta: { roles: LIDER } },
       // Admin
       { path: 'admin', meta: { roles: ADMIN }, children: rotasAdmin },
     ],
