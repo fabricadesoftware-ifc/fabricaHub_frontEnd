@@ -15,6 +15,9 @@ import { dataCompleta, dataMinuscula, diaMes } from '@/utils/datas'
 /** Coordenação (Peraza) recebe as dúvidas sobre as notícias. */
 const ID_COORDENACAO = 3
 
+import { useAuthStore } from '@/stores/auth'
+
+const auth = useAuthStore()
 const rota = useRoute()
 const id = computed(() => Number(rota.params.id))
 const { carregar, carregando, erro, naoEncontrada, noticia, minutos, outras, agenda } = useNoticiaDetalhe(id)
@@ -69,11 +72,11 @@ async function copiarLink() {
     <EstadoErro v-else-if="erro" :mensagem="erro" @tentar-de-novo="carregar" />
 
     <EstadoVazio v-else-if="naoEncontrada || !noticia" titulo="Notícia não encontrada." texto="Ela pode ter sido retirada do jornal.">
-      <BotaoBase variante="secundario" :para="{ name: 'noticias' }">Voltar para Notícias</BotaoBase>
+      <BotaoBase variante="secundario" :para="{ name: auth.usuario?.isSuper ? 'admin-noticias' : 'noticias' }">Voltar para Notícias</BotaoBase>
     </EstadoVazio>
 
     <template v-else>
-      <TrilhaNavegacao class="surgir" :itens="[{ texto: 'Notícias', para: { name: 'noticias' } }, { texto: noticia.categoria }]" />
+      <TrilhaNavegacao class="surgir" :itens="[{ texto: 'Notícias', para: { name: auth.usuario?.isSuper ? 'admin-noticias' : 'noticias' } }, { texto: noticia.categoria }]" />
 
       <div class="leitura">
         <article class="artigo surgir" style="--ordem: 1">
@@ -118,6 +121,7 @@ async function copiarLink() {
           </template>
 
           <footer class="rodape">
+            <BotaoBase v-if="auth.usuario?.isSuper" :para="{ name: 'admin-noticias-editar', params: { id } }">Editar notícia</BotaoBase>
             <BotaoBase variante="secundario" @click="copiarLink">Copiar link</BotaoBase>
             <RouterLink :to="{ name: 'mensagens', query: { para: ID_COORDENACAO } }" class="perguntar">Perguntar à coordenação →</RouterLink>
             <p class="aviso-copia" role="status">{{ avisoCopia }}</p>

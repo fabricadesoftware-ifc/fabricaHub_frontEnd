@@ -15,6 +15,9 @@ import { useEquipeDetalhe } from '@/composables/useEquipeDetalhe'
 import { mesAno, periodo } from '@/utils/datas'
 import { cursoCurto } from '@/utils/pessoas'
 
+import { useAuthStore } from '@/stores/auth'
+
+const auth = useAuthStore()
 const rota = useRoute()
 const id = computed(() => Number(rota.params.id))
 const { carregar, carregando, erro, naoEncontrada, equipe, souMembro, mostrarEx, linhas, quantidadeEx, projetos } =
@@ -41,18 +44,19 @@ onMounted(carregar)
     <EstadoErro v-else-if="erro" :mensagem="erro" @tentar-de-novo="carregar" />
 
     <EstadoVazio v-else-if="naoEncontrada || !equipe" titulo="Equipe não encontrada." texto="Ela pode ter sido removida.">
-      <BotaoBase variante="secundario" :para="{ name: 'equipes' }">Voltar para Equipes</BotaoBase>
+      <BotaoBase variante="secundario" :para="{ name: auth.usuario?.isSuper ? 'admin-equipes' : 'equipes' }">Voltar para Equipes</BotaoBase>
     </EstadoVazio>
 
     <template v-else>
-      <TrilhaNavegacao class="surgir" :itens="[{ texto: 'Equipes', para: { name: 'equipes' } }, { texto: equipe.nome }]" />
+      <TrilhaNavegacao class="surgir" :itens="[{ texto: 'Equipes', para: { name: auth.usuario?.isSuper ? 'admin-equipes' : 'equipes' } }, { texto: equipe.nome }]" />
 
       <CabecalhoPagina class="surgir" style="--ordem: 1" :rotulo="`< EQUIPE /> · DESDE ${mesAno(equipe.desde)}`" :titulo="equipe.nome">
         <template #icone>
           <span class="marcador" :style="{ background: equipe.cor }" aria-hidden="true" />
         </template>
-        <template v-if="souMembro" #acoes>
-          <PilulaStatus status="Você faz parte" cor="var(--accent)" />
+        <template v-if="souMembro || auth.usuario?.isSuper" #acoes>
+          <BotaoBase v-if="auth.usuario?.isSuper" :para="{ name: 'admin-equipes-editar', params: { id } }">Editar equipe</BotaoBase>
+          <PilulaStatus v-if="souMembro" status="Você faz parte" cor="var(--accent)" />
         </template>
       </CabecalhoPagina>
 

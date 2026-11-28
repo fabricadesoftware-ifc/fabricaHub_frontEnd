@@ -18,22 +18,30 @@ declare module 'vue-router' {
   }
 }
 
-// Telas de admin ainda não existem: as rotas abrem uma página vazia (só a sidebar).
+// Cadastros de sistema ficam nas rotas reservadas para a próxima etapa.
 const PaginaVazia = () => import('@/pages/PaginaVazia.vue')
 
 const LIDER: Papel[] = ['lider', 'admin']
 const ADMIN: Papel[] = ['admin']
 
 const rotasAdmin: RouteRecordRaw[] = [
-  { path: 'acessos', name: 'admin-acessos', component: PaginaVazia },
-  { path: 'membros', name: 'admin-membros', component: PaginaVazia },
-  { path: 'projetos', name: 'admin-projetos', component: PaginaVazia },
-  { path: 'equipes', name: 'admin-equipes', component: PaginaVazia },
-  { path: 'tarefas', name: 'admin-tarefas', component: PaginaVazia },
-  { path: 'noticias', name: 'admin-noticias', component: PaginaVazia },
+  { path: '', name: 'admin-dashboard', component: () => import('@/pages/admin/PainelAdmin.vue') },
+  { path: 'acessos', name: 'admin-acessos', component: () => import('@/pages/admin/PainelAdmin.vue'), props: { secao: 'acessos' } },
+  { path: 'membros', name: 'admin-membros', component: () => import('@/pages/members/MembrosPage.vue'), props: { gestao: true } },
+  { path: 'membros/:id/editar', name: 'admin-membros-editar', component: () => import('@/pages/admin/MembroAdmin.vue') },
+  { path: 'projetos', name: 'admin-projetos', component: () => import('@/pages/projects/ProjetosPage.vue'), props: { gestao: true } },
+  { path: 'projetos/novo', name: 'admin-projetos-criar', component: () => import('@/pages/admin/ProjetoAdmin.vue') },
+  { path: 'projetos/:id/editar', name: 'admin-projetos-editar', component: () => import('@/pages/admin/ProjetoAdmin.vue') },
+  { path: 'equipes', name: 'admin-equipes', component: () => import('@/pages/teams/EquipesPage.vue'), props: { gestao: true } },
+  { path: 'equipes/nova', name: 'admin-equipes-criar', component: () => import('@/pages/admin/EquipeAdmin.vue') },
+  { path: 'equipes/:id/editar', name: 'admin-equipes-editar', component: () => import('@/pages/admin/EquipeAdmin.vue') },
+  { path: 'tarefas', name: 'admin-tarefas', component: () => import('@/pages/tasks/TarefasPage.vue'), props: { gestao: true } },
+  { path: 'noticias', name: 'admin-noticias', component: () => import('@/pages/news/NoticiasPage.vue'), props: { gestao: true } },
+  { path: 'noticias/nova', name: 'admin-noticias-criar', component: () => import('@/pages/admin/NoticiaAdmin.vue') },
+  { path: 'noticias/:id/editar', name: 'admin-noticias-editar', component: () => import('@/pages/admin/NoticiaAdmin.vue') },
   { path: 'cadastros', name: 'admin-cadastros', component: PaginaVazia },
   { path: 'tags', name: 'admin-tags', component: PaginaVazia },
-  { path: 'logs', name: 'admin-logs', component: PaginaVazia },
+  { path: 'logs', name: 'admin-logs', component: () => import('@/pages/admin/PainelAdmin.vue'), props: { secao: 'logs' } },
   { path: 'arquivos', name: 'admin-arquivos', component: PaginaVazia },
   { path: 'permissoes', name: 'admin-permissoes', component: PaginaVazia },
 ]
@@ -123,6 +131,7 @@ router.beforeEach(async (to) => {
   if (!auth.autorizado) return { name: 'acesso-negado' }
   if (to.meta.carregaDados) return true
   await garantirCarregado()
+  if (to.name === 'dashboard' && auth.usuario?.isSuper) return { name: 'admin-dashboard' }
   if (!podeAcessar(to, auth.usuario, useProjetosStore().lista)) return { name: 'acesso-negado' }
   return true
 })

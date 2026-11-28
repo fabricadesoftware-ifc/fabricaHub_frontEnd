@@ -16,6 +16,8 @@ import { CATEGORIAS, useJornal } from '@/composables/useJornal'
 import { dataCurta, dataJornal, diaMes, diasAte, lerData, nomeDoDia, nomeMes } from '@/utils/datas'
 import type { CategoriaNoticia } from '@/utils/tipos'
 
+defineProps<{ gestao?: boolean }>()
+
 const { carregar, carregando, erro, categoria, busca, destaque, ultimas, maisLidas, agenda, temFiltro, limparFiltros } =
   useJornal()
 
@@ -47,6 +49,7 @@ const dataPublicacao = (iso: string) => `${dataCurta(iso)} ${lerData(iso).getFul
     <CabecalhoPagina class="surgir" rotulo="< JORNAL DA FÁBRICA />" titulo="Notícias">
       <template #acoes>
         <CampoBusca v-model="busca" class="busca" placeholder="Buscar notícia..." label="Buscar notícia" />
+        <BotaoBase v-if="gestao" :para="{ name: 'admin-noticias-criar' }">Nova notícia</BotaoBase>
       </template>
     </CabecalhoPagina>
 

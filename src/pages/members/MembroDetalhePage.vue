@@ -77,11 +77,11 @@ const doisDigitos = (n: number) => String(n).padStart(2, '0')
     <EstadoErro v-else-if="erro" :mensagem="erro" @tentar-de-novo="carregar" />
 
     <EstadoVazio v-else-if="naoEncontrado || !usuario" titulo="Membro não encontrado." texto="Confira o link ou volte para a lista.">
-      <BotaoBase variante="secundario" :para="{ name: 'membros' }">Voltar para Membros</BotaoBase>
+      <BotaoBase variante="secundario" :para="{ name: auth.usuario?.isSuper ? 'admin-membros' : 'membros' }">Voltar para Membros</BotaoBase>
     </EstadoVazio>
 
     <template v-else>
-      <TrilhaNavegacao class="surgir" :itens="[{ texto: 'Membros', para: { name: 'membros' } }, { texto: usuario.nome }]" />
+      <TrilhaNavegacao class="surgir" :itens="[{ texto: 'Membros', para: { name: auth.usuario?.isSuper ? 'admin-membros' : 'membros' } }, { texto: usuario.nome }]" />
 
       <div class="colunas">
         <!-- Coluna do crachá -->
@@ -108,6 +108,7 @@ const doisDigitos = (n: number) => String(n).padStart(2, '0')
                 </a>
               </li>
             </ul>
+            <BotaoBase v-if="auth.usuario?.isSuper" :para="{ name: 'admin-membros-editar', params: { id } }">Editar cadastro</BotaoBase>
             <BotaoBase v-if="ehVoce" variante="secundario" bloco class="botao-cracha" :para="{ name: 'perfil' }">Editar meu perfil</BotaoBase>
             <BotaoBase v-else bloco class="botao-cracha" :para="{ name: 'mensagens', query: { para: usuario.id } }">
               Enviar mensagem

@@ -121,11 +121,11 @@ function mensagemPara(pessoa: Usuario) {
     <EstadoErro v-else-if="erro" :mensagem="erro" @tentar-de-novo="carregar" />
 
     <EstadoVazio v-else-if="naoEncontrado || !projeto" titulo="Projeto não encontrado." texto="Ele pode ter sido removido.">
-      <BotaoBase variante="secundario" :para="{ name: 'projetos' }">Voltar para Projetos</BotaoBase>
+      <BotaoBase variante="secundario" :para="{ name: auth.usuario?.isSuper ? 'admin-projetos' : 'projetos' }">Voltar para Projetos</BotaoBase>
     </EstadoVazio>
 
     <template v-else>
-      <TrilhaNavegacao class="surgir" :itens="[{ texto: 'Projetos', para: { name: 'projetos' } }, { texto: projeto.nome }]" />
+      <TrilhaNavegacao class="surgir" :itens="[{ texto: 'Projetos', para: { name: auth.usuario?.isSuper ? 'admin-projetos' : 'projetos' } }, { texto: projeto.nome }]" />
 
       <CabecalhoPagina class="surgir" style="--ordem: 1" :rotulo="rotulo" :titulo="projeto.nome">
         <template #icone>
@@ -153,7 +153,7 @@ function mensagemPara(pessoa: Usuario) {
           <BotaoBase v-if="projeto.figma" variante="secundario" :href="projeto.figma">
             <IconeSvg nome="externo" :tamanho="16" /> Figma
           </BotaoBase>
-          <BotaoBase v-if="ehLider" :para="{ name: 'projeto-editar', params: { id: projeto.id } }">
+          <BotaoBase v-if="ehLider || auth.usuario?.isSuper" :para="{ name: auth.usuario?.isSuper ? 'admin-projetos-editar' : 'projeto-editar', params: { id: projeto.id } }">
             <IconeSvg nome="editar" :tamanho="16" /> Editar projeto
           </BotaoBase>
         </template>
